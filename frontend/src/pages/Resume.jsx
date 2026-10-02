@@ -40,7 +40,7 @@ export default function Resume() {
     setMsg('');
     setBusy(true);
     try {
-      await api('/resume', { method: 'POST', body: { data: f } });
+      await api('/resume', { method: 'POST', body: { data: { ...f, education: [f.college, f.branch].filter(Boolean) } } });
       setMsg(t('saved', { defaultValue: 'Saved' }));
     } catch (e) {
       setError(e.message);
