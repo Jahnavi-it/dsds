@@ -8,6 +8,7 @@ export default function Dashboard() {
   const nav = useNavigate();
   const [user, setUser] = useState(null);
   const [result, setResult] = useState(undefined);
+  const [pp, setPp] = useState(null);
 
   useEffect(() => {
     api('/me')
@@ -19,25 +20,53 @@ export default function Dashboard() {
     api('/assessment/result')
       .then((d) => setResult(d.result))
       .catch(() => setResult(null));
+    api('/passport').then(setPp).catch(() => setPp(null));
   }, [nav]);
 
   if (!user) return <p>...</p>;
 
+  const avg = result && result.categories.length
+    ? Math.round(result.categories.reduce((s, c) => s + c.percent, 0) / result.categories.length)
+    : null;
+  const certs = pp && pp.certs ? pp.certs.filter((c) => c.code).length : 0;
+
+  const tiles = [
+    { to: '/assessment', title: t('takeAssessment'), sub: t('tileAssess', { defaultValue: 'Find your skill gaps' }) },
+    { to: '/result', title: t('viewRoadmap'), sub: t('tileRoadmap', { defaultValue: 'Your personalised plan' }) },
+    { to: '/learn', title: t('openLearning'), sub: t('tileLearn', { defaultValue: 'Videos and lessons' }) },
+    { to: '/companies', title: t('companyPrep'), sub: t('tileCompany', { defaultValue: 'Company-wise preparation' }) },
+    { to: '/mock', title: t('mockTest'), sub: t('tileMock', { defaultValue: 'Timed practice tests' }) },
+    { to: '/progress', title: t('progress'), sub: t('tileProgress', { defaultValue: 'Track your growth' }) },
+    { to: '/interview', title: t('interviewTile', { defaultValue: 'Interview' }), sub: t('tileInterview', { defaultValue: 'Technical and HR practice' }) },
+    { to: '/coding', title: t('codingPractice', { defaultValue: 'Coding practice' }), sub: t('tileCoding', { defaultValue: 'Solve and run tests' }) },
+    { to: '/resume', title: t('resumeTile', { defaultValue: 'Resume' }), sub: t('tileResume', { defaultValue: 'Build and print' }) },
+    { to: '/passport', title: t('passport', { defaultValue: 'Placement passport' }), sub: t('tilePassport', { defaultValue: 'Readiness and certificates' }) },
+  ];
+  if (user.role === 'admin') tiles.push({ to: '/admin', title: t('adminPanel'), sub: 'Admin' });
+
   return (
     <div>
-      <div className="card">
-        <h2>{t('welcome')}, {user.name}!</h2>
-        <p className="muted">{t('dashboard')}</p>
-        <p>{user.college} | {user.branch} | {t('year')} {user.year}</p>
-        <div className="stack">
-          <Link to="/assessment" className="primary wide linkbtn">{t('takeAssessment')}</Link>
-          <Link to="/result" className="secondary wide linkbtn">{t('viewRoadmap')}</Link>
-          <Link to="/learn" className="primary wide linkbtn">{t('openLearning')}</Link>
-          <Link to="/companies" className="primary wide linkbtn">{t('companyPrep')}</Link>
-          {user.role === 'admin' && <Link to="/admin" className="secondary wide linkbtn">{t('adminPanel')}</Link>}
-          <Link to="/mock" className="primary wide linkbtn">{t('mockTest')}</Link>
-          <Link to="/progress" className="secondary wide linkbtn">{t('progress')}</Link>
+      <div className="hero">
+        <div>
+          <h2>{t('welcome')}, {user.name}!</h2>
+          <p className="herosub">{[user.college, user.branch, user.year ? t('year') + ' ' + user.year : ''].filter(Boolean).join(' | ')}</p>
         </div>
+        <Link to="/passport" className="herobtn">{t('passport', { defaultValue: 'Placement passport' })}</Link>
+      </div>
+
+      <div className="stats">
+        <div className="stat"><div className="statnum">{pp ? pp.readiness + '%' : '--'}</div><div className="statlbl">{t('readiness', { defaultValue: 'Placement readiness' })}</div></div>
+        <div className="stat"><div className="statnum">{avg === null ? '--' : avg + '%'}</div><div className="statlbl">{t('avgScore', { defaultValue: 'Assessment average' })}</div></div>
+        <div className="stat"><div className="statnum">{certs}</div><div className="statlbl">{t('certificates', { defaultValue: 'Certificates' })}</div></div>
+      </div>
+
+      <div className="tiles">
+        {tiles.map((x) => (
+          <Link key={x.to} to={x.to} className="tile">
+            <strong>{x.title}</strong>
+            <span>{x.sub}</span>
+          </Link>
+        ))}
       </div>
 
       <div className="card">
