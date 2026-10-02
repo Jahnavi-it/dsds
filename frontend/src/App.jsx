@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+﻿import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -14,11 +14,18 @@ import Practice from './pages/Practice.jsx';
 import Admin from './pages/Admin.jsx';
 import Mock from './pages/Mock.jsx';
 import Progress from './pages/Progress.jsx';
+import Interview from './pages/Interview.jsx';
+import Resume from './pages/Resume.jsx';
+import Passport from './pages/Passport.jsx';
+import Coding from './pages/Coding.jsx';
+import Notes from './pages/Notes.jsx';
+import Verify from './pages/Verify.jsx';
+import VoiceAssistant from './VoiceAssistant.jsx';
 
 const langs = [
   { code: 'en', label: 'English' },
-  { code: 'te', label: 'తెలుగు' },
-  { code: 'hi', label: 'हिन्दी' }
+  { code: 'te', label: 'à°¤à±†à°²à±à°—à±' },
+  { code: 'hi', label: 'à¤¹à¤¿à¤¨à¥à¤¦à¥€' }
 ];
 
 export default function App() {
@@ -56,7 +63,8 @@ export default function App() {
         </div>
       </header>
       <main className="container">
-        <Routes>
+        {token && (<div className="chips" style={{ padding: '8px 20px' }}><Link className="tag big" to="/interview">Interview</Link><Link className="tag big" to="/resume">Resume</Link><Link className="tag big" to="/passport">Passport</Link><Link className="tag big" to="/coding">Coding</Link><Link className="tag big" to="/notes">Notes</Link></div>)}
+<Routes>
           <Route path="/" element={<Navigate to={token ? '/dashboard' : '/login'} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -72,7 +80,9 @@ export default function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/mock" element={<Mock />} />
           <Route path="/progress" element={<Progress />} />
+<Route path="/interview" element={<Interview />} /><Route path="/resume" element={<Resume />} /><Route path="/passport" element={<Passport />} /><Route path="/coding" element={<Coding />} /><Route path="/notes" element={<Notes />} /><Route path="/notes/:id" element={<Notes />} /><Route path="/verify/:code" element={<Verify />} /><Route path="/verify" element={<Verify />} />
         </Routes>
+{token && <VoiceAssistant />}
       </main>
     </div>
   );
