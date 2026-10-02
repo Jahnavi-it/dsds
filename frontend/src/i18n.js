@@ -4,7 +4,6 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: { translation: {
     appName: 'DSDS.edu',
-    tagline: 'No Ameerpet coaching needed. From zero to a top MNC job, all in one app.',
     login: 'Login', register: 'Register', logout: 'Logout',
     email: 'Email', password: 'Password', name: 'Name',
     college: 'College', branch: 'Branch', year: 'Year',
@@ -13,7 +12,6 @@ const resources = {
   } },
   te: { translation: {
     appName: 'DSDS.edu',
-    tagline: 'అమీర్పేట్ కోచింగ్ అవసరం లేదు. జీరో నుండి టాప్ MNC ఉద్యోగం వరకు, అంతా ఒకే యాప్ లో.',
     login: 'లాగిన్', register: 'నమోదు చేసుకోండి', logout: 'లాగౌట్',
     email: 'ఇమెయిల్', password: 'పాస్వర్డ్', name: 'పేరు',
     college: 'కళాశాల', branch: 'బ్రాంచ్', year: 'సంవత్సరం',
@@ -22,7 +20,6 @@ const resources = {
   } },
   hi: { translation: {
     appName: 'DSDS.edu',
-    tagline: 'अमीरपेट कोचिंग की ज़रूरत नहीं। ज़ीरो से टॉप MNC जॉब तक, सब एक ही ऐप में।',
     login: 'लॉगिन', register: 'रजिस्टर करें', logout: 'लॉगआउट',
     email: 'ईमेल', password: 'पासवर्ड', name: 'नाम',
     college: 'कॉलेज', branch: 'ब्रांच', year: 'वर्ष',
