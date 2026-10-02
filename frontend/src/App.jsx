@@ -24,8 +24,8 @@ import VoiceAssistant from './VoiceAssistant.jsx';
 
 const langs = [
   { code: 'en', label: 'English' },
-  { code: 'te', label: 'à°¤à±†à°²à±à°—à±' },
-  { code: 'hi', label: 'à¤¹à¤¿à¤¨à¥à¤¦à¥€' }
+  { code: 'te', label: '\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41' },
+  { code: 'hi', label: '\u0939\u093F\u0928\u094D\u0926\u0940' }
 ];
 
 export default function App() {
@@ -87,3 +87,4 @@ export default function App() {
     </div>
   );
 }
+
