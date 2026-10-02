@@ -64,3 +64,4 @@ a.card.subj:hover { box-shadow: 0 4px 14px rgba(59,91,219,0.2); }
 .timerbar { display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 5; }
 .timer { font-size: 18px; }
 .timer.low { color: #c92a2a; }
+@media print { body * { visibility: hidden; } #resume-preview, #resume-preview * { visibility: visible; } #resume-preview { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; } .no-print { display: none; } }
