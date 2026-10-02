@@ -1,4 +1,4 @@
-﻿import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -20,6 +20,8 @@ import Passport from './pages/Passport.jsx';
 import Coding from './pages/Coding.jsx';
 import Notes from './pages/Notes.jsx';
 import Verify from './pages/Verify.jsx';
+import Sidebar from './Sidebar.jsx';
+import './i18nExtra.js';
 import VoiceAssistant from './VoiceAssistant.jsx';
 
 const langs = [
@@ -63,7 +65,7 @@ export default function App() {
         </div>
       </header>
       <main className="container">
-        {token && (<div className="chips" style={{ padding: '8px 20px' }}><Link className="tag big" to="/interview">Interview</Link><Link className="tag big" to="/resume">Resume</Link><Link className="tag big" to="/passport">Passport</Link><Link className="tag big" to="/coding">Coding</Link><Link className="tag big" to="/notes">Notes</Link></div>)}
+        {token && <Sidebar />}
 <Routes>
           <Route path="/" element={<Navigate to={token ? '/dashboard' : '/login'} />} />
           <Route path="/login" element={<Login />} />

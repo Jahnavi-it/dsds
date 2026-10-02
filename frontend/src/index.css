@@ -78,3 +78,13 @@ a.card.subj:hover { box-shadow: 0 4px 14px rgba(59,91,219,0.2); }
 .tile { display: flex; flex-direction: column; gap: 6px; background: #fff; border-radius: 14px; padding: 16px; text-decoration: none; color: #141b3a; box-shadow: 0 1px 4px rgba(20, 27, 58, 0.08); border: 1px solid transparent; }
 .tile:hover { border-color: #3b5bdb; transform: translateY(-2px); }
 .tile span { font-size: 13px; color: #5b6280; }
+
+.sidebar { position: fixed; top: 84px; left: max(12px, calc(50vw - 670px)); width: 210px; display: flex; flex-direction: column; gap: 4px; background: #fff; border-radius: 14px; padding: 10px; box-shadow: 0 1px 4px rgba(20, 27, 58, 0.08); max-height: calc(100vh - 100px); overflow-y: auto; z-index: 5; }
+.sidelink { display: block; padding: 10px 12px; border-radius: 8px; color: #141b3a; text-decoration: none; font-size: 14px; font-weight: 500; }
+.sidelink:hover { background: #eef1ff; }
+.sidelink.active { background: #3b5bdb; color: #fff; }
+.sectiontitle { margin: 4px 0 10px; color: #141b3a; }
+@media (max-width: 1340px) {
+  .sidebar { position: static; width: auto; flex-direction: row; overflow-x: auto; margin: 12px 20px 0; max-height: none; }
+  .sidelink { white-space: nowrap; }
+}

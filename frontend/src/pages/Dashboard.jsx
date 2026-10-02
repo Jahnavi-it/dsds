@@ -25,6 +25,11 @@ export default function Dashboard() {
 
   if (!user) return <p>...</p>;
 
+  const h = new Date().getHours();
+  const greet = h < 12 ? t('goodMorning', { defaultValue: 'Good morning' })
+    : h < 17 ? t('goodAfternoon', { defaultValue: 'Good afternoon' })
+    : t('goodEvening', { defaultValue: 'Good evening' });
+
   const avg = result && result.categories.length
     ? Math.round(result.categories.reduce((s, c) => s + c.percent, 0) / result.categories.length)
     : null;
@@ -32,15 +37,9 @@ export default function Dashboard() {
 
   const tiles = [
     { to: '/assessment', title: t('takeAssessment'), sub: t('tileAssess', { defaultValue: 'Find your skill gaps' }) },
-    { to: '/result', title: t('viewRoadmap'), sub: t('tileRoadmap', { defaultValue: 'Your personalised plan' }) },
     { to: '/learn', title: t('openLearning'), sub: t('tileLearn', { defaultValue: 'Videos and lessons' }) },
-    { to: '/companies', title: t('companyPrep'), sub: t('tileCompany', { defaultValue: 'Company-wise preparation' }) },
     { to: '/mock', title: t('mockTest'), sub: t('tileMock', { defaultValue: 'Timed practice tests' }) },
-    { to: '/progress', title: t('progress'), sub: t('tileProgress', { defaultValue: 'Track your growth' }) },
     { to: '/interview', title: t('interviewTile', { defaultValue: 'Interview' }), sub: t('tileInterview', { defaultValue: 'Technical and HR practice' }) },
-    { to: '/coding', title: t('codingPractice', { defaultValue: 'Coding practice' }), sub: t('tileCoding', { defaultValue: 'Solve and run tests' }) },
-    { to: '/resume', title: t('resumeTile', { defaultValue: 'Resume' }), sub: t('tileResume', { defaultValue: 'Build and print' }) },
-    { to: '/passport', title: t('passport', { defaultValue: 'Placement passport' }), sub: t('tilePassport', { defaultValue: 'Readiness and certificates' }) },
   ];
   if (user.role === 'admin') tiles.push({ to: '/admin', title: t('adminPanel'), sub: 'Admin' });
 
@@ -48,7 +47,7 @@ export default function Dashboard() {
     <div>
       <div className="hero">
         <div>
-          <h2>{t('welcome')}, {user.name}!</h2>
+          <h2>{greet}, {user.name}!</h2>
           <p className="herosub">{[user.college, user.branch, user.year ? t('year') + ' ' + user.year : ''].filter(Boolean).join(' | ')}</p>
         </div>
         <Link to="/passport" className="herobtn">{t('passport', { defaultValue: 'Placement passport' })}</Link>
@@ -60,6 +59,7 @@ export default function Dashboard() {
         <div className="stat"><div className="statnum">{certs}</div><div className="statlbl">{t('certificates', { defaultValue: 'Certificates' })}</div></div>
       </div>
 
+      <h3 className="sectiontitle">{t('quickActions', { defaultValue: 'Quick actions' })}</h3>
       <div className="tiles">
         {tiles.map((x) => (
           <Link key={x.to} to={x.to} className="tile">
