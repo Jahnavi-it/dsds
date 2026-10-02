@@ -60,7 +60,6 @@ require('./interview')(app, db, auth);
 require('./resume')(app, db, auth);
 require('./coding')(app, db, auth);
 require('./passport')(app, db, auth);
-require('./notes')(app, db, auth);
 require('./admin')(app, db, auth);
 require('./progress')(app, db, auth);
 require('./proctor')(app, db, auth);
