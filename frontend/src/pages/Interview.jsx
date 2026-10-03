@@ -113,6 +113,7 @@ export default function Interview() {
     if (!d) return;
     if (d.done) {
       setResult(d);
+      proctor.report('interview', sessionId);
       setQ(null);
       proctor.stop();
       loadHistory();
@@ -152,6 +153,7 @@ export default function Interview() {
 
   endRef.current = () => {
     reset();
+    proctor.report('interview', sessionId);
     setError('Interview ended: too many proctoring violations (tab switch, leaving full screen or camera off).');
   };
 

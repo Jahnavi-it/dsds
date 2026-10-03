@@ -89,6 +89,7 @@ function scoreAnswer(q, answer) {
 }
 
 const asFollow = (p) => (typeof p === 'string' ? { q: p, kw: [], a: '' } : p);
+const chainsFor = (co) => CHAINS.concat(require('./interview_followups')[co] || []);
 
 module.exports = function (app, db, auth) {
   db.exec(
@@ -126,7 +127,7 @@ module.exports = function (app, db, auth) {
 
     const follows = s.asked.filter((a) => a.kind === 'follow').length;
     if (!s.pending.length && follows < 4) {
-      CHAINS.forEach((c, ci) => {
+      chainsFor(row.company).forEach((c, ci) => {
         if (!s.pending.length && c.types.includes(row.type) && !s.used.includes(ci) && c.keys.some((k) => new RegExp('\\b' + k + '\\b', 'i').test(text))) {
           s.used.push(ci);
           s.pending = c.qs.slice(0, 4 - follows);

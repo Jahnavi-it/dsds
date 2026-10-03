@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { listen, speak, speechSupported, stopSpeaking, voiceErrorText } from './voice.js';
 
@@ -20,6 +20,7 @@ const COMMANDS = [
 
 export default function VoiceAssistant() {
   const nav = useNavigate();
+  const loc = useLocation();
   const { t, i18n } = useTranslation();
   const [on, setOn] = useState(false);
   const [msg, setMsg] = useState('');
@@ -30,7 +31,7 @@ export default function VoiceAssistant() {
     stopSpeaking();
   }, []);
 
-  if (!speechSupported()) return null;
+  if (!speechSupported() || ['/mock', '/interview', '/simulator'].includes(loc.pathname)) return null;
 
   function handle(text) {
     const said = text.toLowerCase();

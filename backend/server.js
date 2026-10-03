@@ -64,6 +64,7 @@ require('./admin')(app, db, auth);
 require('./progress')(app, db, auth);
 require('./proctor')(app, db, auth);
 require('./simulator')(app, db, auth);
+require('./proctor_log')(app, db, auth);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log('DSDS backend running on http://localhost:' + PORT));

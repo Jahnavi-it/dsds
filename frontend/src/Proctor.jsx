@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { api } from './api.js';
 
 export function useProctor({ max = 3, onLimit } = {}) {
   const [active, setActive] = useState(false);
@@ -11,6 +12,9 @@ export function useProctor({ max = 3, onLimit } = {}) {
   const activeRef = useRef(false);
   const violRef = useRef(0);
   const lastRef = useRef(0);
+  const logRef = useRef([]);
+  const startedRef = useRef(false);
+  const autoRef = useRef(false);
   const limitRef = useRef(onLimit);
   limitRef.current = onLimit;
 
@@ -20,10 +24,12 @@ export function useProctor({ max = 3, onLimit } = {}) {
     if (now - lastRef.current < 1500) return;
     lastRef.current = now;
     violRef.current += 1;
+    logRef.current.push({ at: new Date().toISOString(), event: msg });
     setViol(violRef.current);
     if (violRef.current >= max) {
       activeRef.current = false;
       setLimitHit(true);
+      autoRef.current = true;
       setWarning('Warning ' + max + '/' + max + ': ' + msg + '. Limit reached, the test is being submitted.');
       if (limitRef.current) limitRef.current();
     } else {
@@ -58,6 +64,8 @@ export function useProctor({ max = 3, onLimit } = {}) {
 
   const start = useCallback(async () => {
     violRef.current = 0;
+    logRef.current = [];
+    autoRef.current = false;
     setViol(0);
     setWarning('');
     setLimitHit(false);
@@ -74,6 +82,7 @@ export function useProctor({ max = 3, onLimit } = {}) {
     setIsFs(!!document.fullscreenElement);
     lastRef.current = Date.now();
     activeRef.current = true;
+    startedRef.current = true;
     setActive(true);
     return true;
   }, [flag]);
@@ -88,10 +97,16 @@ export function useProctor({ max = 3, onLimit } = {}) {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   }, []);
 
+  const report = useCallback((source, refId) => {
+    if (!startedRef.current) return;
+    startedRef.current = false;
+    api('/proctor/log', { method: 'POST', body: { source, refId, violations: violRef.current, autoSubmitted: autoRef.current, log: logRef.current } }).catch(() => {});
+  }, []);
+
   useEffect(() => () => stop(), [stop]);
 
   return {
-    active, viol, max, warning, limitHit, isFs, videoRef, start, stop,
+    active, viol, max, warning, limitHit, isFs, videoRef, start, stop, report,
     clearWarning: () => setWarning(''),
     goFs: () => document.documentElement.requestFullscreen().catch(() => {})
   };

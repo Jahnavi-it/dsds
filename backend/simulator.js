@@ -71,6 +71,43 @@ module.exports = function (app, db, auth) {
     });
   });
 
+  app.get('/api/simulator/history', auth, (req, res) => {
+    const rows = db.prepare('SELECT id, company, overall, cleared, data, created_at FROM simulator_attempts WHERE user_id = ? ORDER BY id DESC LIMIT 10').all(req.user.id);
+    res.json({
+      history: rows.map((r) => {
+        const c = getCompany(r.company);
+        let n = 0;
+        try { n = JSON.parse(r.data || '[]').length; } catch (e) { n = 0; }
+        return { id: r.id, company: c ? c.name : r.company, overall: r.overall, cleared: r.cleared, totalRounds: n, created_at: r.created_at };
+      })
+    });
+  });
+
+  app.get('/api/simulator/active', auth, (req, res) => {
+    const s = db.prepare('SELECT * FROM simulator_sessions WHERE user_id = ? AND submitted = 0 ORDER BY id DESC LIMIT 1').get(req.user.id);
+    if (!s) return res.json({});
+    const elapsed = Math.max(0, Math.round((Date.now() - Date.parse(String(s.started_at).replace(' ', 'T') + 'Z')) / 1000));
+    const flat = JSON.parse(s.questions);
+    const shown = flat.map((q, i) => ({ i, round: q.round, cat: q.cat, question: q.question, options: q.options }));
+    const rds = ROUNDS.map((rd) => ({ id: rd.id, name: rd.name, minutes: rd.minutes, questions: shown.filter((q) => q.round === rd.id) })).filter((rd) => rd.questions.length > 0);
+    let acc = 0;
+    let idx = -1;
+    let left = 0;
+    rds.forEach((rd, i) => {
+      if (idx < 0) {
+        acc += rd.minutes * 60;
+        if (elapsed < acc) { idx = i; left = acc - elapsed; }
+      }
+    });
+    if (idx < 0) return res.json({});
+    const company = getCompany(s.company);
+    res.json({
+      session: { sessionId: s.id, company: company ? company.name : s.company, passMark: company && company.type === 'product' ? 70 : 60, rounds: rds },
+      roundIndex: idx,
+      roundSecondsLeft: left
+    });
+  });
+
   app.post('/api/simulator/submit', auth, (req, res) => {
     const { sessionId, answers } = req.body || {};
     const s = db.prepare('SELECT * FROM simulator_sessions WHERE id = ? AND user_id = ?').get(Number(sessionId), req.user.id);

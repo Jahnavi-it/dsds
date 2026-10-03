@@ -16,6 +16,7 @@ export default function Growth() {
   const [prog, setProg] = useState(null);
   const [result, setResult] = useState(null);
   const [ready, setReady] = useState(false);
+  const [sims, setSims] = useState([]);
 
   useEffect(() => {
     Promise.all([
@@ -27,6 +28,10 @@ export default function Growth() {
       setPp(a); setProg(b); setResult(c); setReady(true);
     });
   }, [nav]);
+
+  useEffect(() => {
+    api('/simulator/history').then((d) => setSims(d.history || [])).catch(() => {});
+  }, []);
 
   if (!ready) return <p>...</p>;
 
@@ -59,6 +64,15 @@ export default function Growth() {
   return (
     <div>
       <h2>{t('growthTitle', { defaultValue: 'My growth' })}</h2>
+      {sims.length > 0 && (
+        <div className="card">
+          <h3>Placement simulator history</h3>
+          {sims.map((s) => (
+            <div key={s.id} className="rowhead row"><span>{s.company}</span><span>{s.overall}% | {s.cleared}/{s.totalRounds} rounds</span></div>
+          ))}
+          {sims.length >= 2 && <p><strong>{sims[0].overall - sims[sims.length - 1].overall >= 0 ? 'Improved by +' : 'Changed by '}{sims[0].overall - sims[sims.length - 1].overall}% since your first attempt here</strong></p>}
+        </div>
+      )}
 
       <div className="card">
         <h3>{t('achievements', { defaultValue: 'Achievements' })} ({unlocked}/{ach.length})</h3>

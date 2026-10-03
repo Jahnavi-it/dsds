@@ -31,6 +31,7 @@ export default function Simulator() {
   const [err, setErr] = useState('');
   const [out, setOut] = useState(null);
   const [proctored, setProctored] = useState(true);
+  const [resumable, setResumable] = useState(null);
   const finishRef = useRef(null);
   const proctor = useProctor({ max: 3, onLimit: () => { if (finishRef.current) finishRef.current(); } });
 
@@ -55,6 +56,19 @@ export default function Simulator() {
     if (phase === 'running' && deadline && now >= deadline) goNext();
   }, [now]);
 
+  useEffect(() => {
+    api('/simulator/active').then((d) => { if (d && d.session) setResumable(d); }).catch(() => {});
+  }, []);
+
+  const resume = () => {
+    const d = resumable;
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('simAns' + d.session.sessionId) || '{}'); } catch (e) { saved = {}; }
+    setSession(d.session); setAnswers(saved); setRi(d.roundIndex); setOut(null);
+    setDeadline(Date.now() + d.roundSecondsLeft * 1000);
+    setNow(Date.now()); setResumable(null); setPhase('running');
+  };
+
   const start = async () => {
     setErr(''); setBusy(true);
     if (proctored) {
@@ -75,7 +89,7 @@ export default function Simulator() {
     setBusy(true);
     try {
       const d = await api('/simulator/submit', { method: 'POST', body: { sessionId: session.sessionId, answers: answers } });
-      setOut(d); setPhase('result'); proctor.stop();
+      proctor.report('simulator', session.sessionId); setOut(d); setPhase('result'); proctor.stop();
     } catch (e) { setErr(e.message); proctor.stop(); }
     setBusy(false);
   };
@@ -120,7 +134,7 @@ export default function Simulator() {
             <p className="qtext">{n + 1}. {q.question}</p>
             {q.options.map((o, oi) => (
               <label key={oi} style={{ display: 'block', margin: '6px 0', cursor: 'pointer' }}>
-                <input type="radio" name={'q' + q.i} checked={answers[q.i] === oi} onChange={() => setAnswers({ ...answers, [q.i]: oi })} /> {o}
+                <input type="radio" name={'q' + q.i} checked={answers[q.i] === oi} onChange={() => { const na = { ...answers, [q.i]: oi }; setAnswers(na); try { localStorage.setItem('simAns' + session.sessionId, JSON.stringify(na)); } catch (e) { /* ignore */ } }} /> {o}
               </label>
             ))}
           </div>
@@ -198,6 +212,13 @@ export default function Simulator() {
   return (
     <div>
       <h2>{t('simTitle', { defaultValue: 'Placement simulator' })}</h2>
+      {resumable && (
+        <div className="card">
+          <p><strong>You have an unfinished simulation ({resumable.session.company}).</strong></p>
+          <p className="muted small">Time is counted from when you started, so the clock kept running. Camera proctoring is not restarted on resume.</p>
+          <button className="primary wide" onClick={resume}>Resume simulation</button>
+        </div>
+      )}
       <div className="card">
         <label>{t('simTarget', { defaultValue: 'Target company' })}</label>
         <select value={cid} onChange={(e) => setCid(e.target.value)}>
