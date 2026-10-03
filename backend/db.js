@@ -16,4 +16,24 @@ CREATE TABLE IF NOT EXISTS users (
 );
 `);
 
+// Re-create the demo account on every start (hosting disk can reset the database)
+if (process.env.SEED_EMAIL && process.env.SEED_PASSWORD) {
+  const bcrypt = require('bcryptjs');
+  const seedEmail = process.env.SEED_EMAIL.trim().toLowerCase();
+  const exists = db.prepare('SELECT id FROM users WHERE email = ?').get(seedEmail);
+  if (!exists) {
+    db.prepare(
+      'INSERT INTO users (name, email, password_hash, college, branch, year, language) VALUES (?,?,?,?,?,?,?)'
+    ).run(
+      process.env.SEED_NAME || 'Student',
+      seedEmail,
+      bcrypt.hashSync(process.env.SEED_PASSWORD, 10),
+      'SRGEC',
+      'CSE',
+      4,
+      'en'
+    );
+    console.log('Seeded demo account');
+  }
+}
 module.exports = db;
