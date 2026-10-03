@@ -98,3 +98,6 @@ a.card.subj:hover { box-shadow: 0 4px 14px rgba(59,91,219,0.2); }
 .brand { text-align: center; margin-bottom: 18px; }
 .brand h1 { margin: 0; font-size: 34px; letter-spacing: 4px; color: #3b5bdb; }
 .brand .tagline { margin: 6px 0 0; color: #5c6480; font-size: 14px; }
+
+.nextaction { margin-top: 14px; padding: 12px; border-radius: 10px; background: #eef1ff; }
+.nextaction .actionbtn { display: inline-block; margin-top: 8px; }

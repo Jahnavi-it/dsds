@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 import ActionEngine from '../ActionEngine.jsx';
+import ReadinessBreakdown from '../ReadinessBreakdown.jsx';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -69,6 +70,8 @@ export default function Dashboard() {
           </Link>
         ))}
       </div>
+
+      <ReadinessBreakdown pp={pp} />
 
       <ActionEngine result={result} />
 

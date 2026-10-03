@@ -44,3 +44,18 @@ i18n.addResourceBundle('hi', 'translation', {
   cat_reasoning: 'रीज़निंग', cat_aptitude: 'एप्टीट्यूड', cat_verbal: 'वर्बल एबिलिटी',
   cat_cn: 'कंप्यूटर नेटवर्क', cat_os: 'ऑपरेटिंग सिस्टम', focusTopics: 'मुख्य विषय'
 }, true, true);
+i18n.addResourceBundle('en', 'translation', {
+  whyReadiness: 'Why this readiness score?', nextAction: 'Next recommended action', potential: 'Up to +{{n}}% readiness', goNow: 'Start now',
+  part_assessment: 'Assessment', part_mock: 'Mock test', part_tech: 'Technical interview', part_hr: 'HR interview',
+  part_coding: 'Coding', part_activity: 'Activity', part_resume: 'Resume'
+}, true, true);
+i18n.addResourceBundle('te', 'translation', {
+  whyReadiness: 'ఈ రెడినెస్ స్కోరు ఎందుకు?', nextAction: 'తదుపరి సిఫార్సు చర్య', potential: 'రెడినెస్ +{{n}}% వరకు పెరుగుతుంది', goNow: 'ఇప్పుడే ప్రారంభించండి',
+  part_assessment: 'అసెస్‌మెంట్', part_mock: 'మాక్ టెస్ట్', part_tech: 'టెక్నికల్ ఇంటర్వ్యూ', part_hr: 'HR ఇంటర్వ్యూ',
+  part_coding: 'కోడింగ్', part_activity: 'యాక్టివిటీ', part_resume: 'రెజ్యూమ్'
+}, true, true);
+i18n.addResourceBundle('hi', 'translation', {
+  whyReadiness: 'यह तैयारी स्कोर क्यों?', nextAction: 'अगली अनुशंसित कार्रवाई', potential: 'तैयारी +{{n}}% तक बढ़ेगी', goNow: 'अभी शुरू करें',
+  part_assessment: 'असेसमेंट', part_mock: 'मॉक टेस्ट', part_tech: 'टेक्निकल इंटरव्यू', part_hr: 'HR इंटरव्यू',
+  part_coding: 'कोडिंग', part_activity: 'गतिविधि', part_resume: 'रिज्यूमे'
+}, true, true);
