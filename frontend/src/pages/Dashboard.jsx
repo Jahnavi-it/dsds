@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 import ActionEngine from '../ActionEngine.jsx';
 import ReadinessBreakdown from '../ReadinessBreakdown.jsx';
+import Mission from '../Mission.jsx';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -54,6 +55,8 @@ export default function Dashboard() {
         </div>
         <Link to="/passport" className="herobtn">{t('passport', { defaultValue: 'Placement passport' })}</Link>
       </div>
+
+      <Mission user={user} result={result} />
 
       <div className="stats">
         <div className="stat"><div className="statnum">{pp ? pp.readiness + '%' : '--'}</div><div className="statlbl">{t('readiness', { defaultValue: 'Placement readiness' })}</div></div>

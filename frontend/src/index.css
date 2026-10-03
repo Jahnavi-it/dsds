@@ -101,3 +101,8 @@ a.card.subj:hover { box-shadow: 0 4px 14px rgba(59,91,219,0.2); }
 
 .nextaction { margin-top: 14px; padding: 12px; border-radius: 10px; background: #eef1ff; }
 .nextaction .actionbtn { display: inline-block; margin-top: 8px; }
+
+.missiontask { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eef1ff; }
+.missiontext { flex: 1; font-size: 14px; }
+.missiontask.done .missiontext { text-decoration: line-through; color: #8a91ad; }
+.mission .bar { margin-top: 6px; }

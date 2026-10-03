@@ -59,3 +59,18 @@ i18n.addResourceBundle('hi', 'translation', {
   part_assessment: 'असेसमेंट', part_mock: 'मॉक टेस्ट', part_tech: 'टेक्निकल इंटरव्यू', part_hr: 'HR इंटरव्यू',
   part_coding: 'कोडिंग', part_activity: 'गतिविधि', part_resume: 'रिज्यूमे'
 }, true, true);
+i18n.addResourceBundle('en', 'translation', {
+  missionTitle: "Today's Placement Mission", missionPriority: 'Priority', missionLearn: 'Learn: {{name}} (20 min)', missionAssess: 'Take the placement assessment',
+  missionPractice: 'Practice: attempt a mock test', missionCoding: 'Coding: solve 1 easy problem', missionInterview: 'Interview: answer 2 HR questions',
+  missionProgress: '{{done}}/{{total}} completed', missionOpen: 'Open'
+}, true, true);
+i18n.addResourceBundle('te', 'translation', {
+  missionTitle: 'నేటి ప్లేస్‌మెంట్ మిషన్', missionPriority: 'ప్రాధాన్యత', missionLearn: 'నేర్చుకోండి: {{name}} (20 నిమిషాలు)', missionAssess: 'ప్లేస్‌మెంట్ అసెస్‌మెంట్ తీసుకోండి',
+  missionPractice: 'ప్రాక్టీస్: ఒక మాక్ టెస్ట్ రాయండి', missionCoding: 'కోడింగ్: 1 సులభమైన సమస్య పరిష్కరించండి', missionInterview: 'ఇంటర్వ్యూ: 2 HR ప్రశ్నలకు సమాధానం ఇవ్వండి',
+  missionProgress: '{{done}}/{{total}} పూర్తయ్యాయి', missionOpen: 'తెరవండి'
+}, true, true);
+i18n.addResourceBundle('hi', 'translation', {
+  missionTitle: 'आज का प्लेसमेंट मिशन', missionPriority: 'प्राथमिकता', missionLearn: 'सीखें: {{name}} (20 मिनट)', missionAssess: 'प्लेसमेंट असेसमेंट दें',
+  missionPractice: 'अभ्यास: एक मॉक टेस्ट दें', missionCoding: 'कोडिंग: 1 आसान समस्या हल करें', missionInterview: 'इंटरव्यू: 2 HR प्रश्नों के उत्तर दें',
+  missionProgress: '{{done}}/{{total}} पूरे', missionOpen: 'खोलें'
+}, true, true);
