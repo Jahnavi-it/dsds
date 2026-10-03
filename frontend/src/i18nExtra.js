@@ -29,3 +29,18 @@ Object.keys(tr).forEach((l) => i18n.addResourceBundle(l, 'translation', tr[l], t
 i18n.addResourceBundle('en', 'translation', { tagline: 'Your Journey. Your Skills. Your Placement.' }, true, true);
 i18n.addResourceBundle('te', 'translation', { tagline: 'మీ ప్రయాణం. మీ నైపుణ్యాలు. మీ ప్లేస్‌మెంట్.' }, true, true);
 i18n.addResourceBundle('hi', 'translation', { tagline: 'आपकी यात्रा। आपके कौशल। आपका प्लेसमेंट।' }, true, true);
+i18n.addResourceBundle('en', 'translation', {
+  takeAssessment: 'Take Assessment', action_learn: 'Start Learning', action_practice: 'Practice Now',
+  cat_reasoning: 'Reasoning', cat_aptitude: 'Aptitude', cat_verbal: 'Verbal Ability',
+  cat_cn: 'Computer Networks', cat_os: 'Operating Systems', focusTopics: 'Focus Topics'
+}, true, true);
+i18n.addResourceBundle('te', 'translation', {
+  takeAssessment: 'అసెస్‌మెంట్ తీసుకోండి', action_learn: 'నేర్చుకోవడం ప్రారంభించండి', action_practice: 'ఇప్పుడే ప్రాక్టీస్ చేయండి',
+  cat_reasoning: 'రీజనింగ్', cat_aptitude: 'అప్టిట్యూడ్', cat_verbal: 'వెర్బల్ ఎబిలిటీ',
+  cat_cn: 'కంప్యూటర్ నెట్‌వర్క్స్', cat_os: 'ఆపరేటింగ్ సిస్టమ్స్', focusTopics: 'ముఖ్య అంశాలు'
+}, true, true);
+i18n.addResourceBundle('hi', 'translation', {
+  takeAssessment: 'असेसमेंट दें', action_learn: 'सीखना शुरू करें', action_practice: 'अभी अभ्यास करें',
+  cat_reasoning: 'रीज़निंग', cat_aptitude: 'एप्टीट्यूड', cat_verbal: 'वर्बल एबिलिटी',
+  cat_cn: 'कंप्यूटर नेटवर्क', cat_os: 'ऑपरेटिंग सिस्टम', focusTopics: 'मुख्य विषय'
+}, true, true);
