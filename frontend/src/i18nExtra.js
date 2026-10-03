@@ -26,3 +26,6 @@ const tr = {
 };
 
 Object.keys(tr).forEach((l) => i18n.addResourceBundle(l, 'translation', tr[l], true, true));
+i18n.addResourceBundle('en', 'translation', { tagline: 'Your Journey. Your Skills. Your Placement.' }, true, true);
+i18n.addResourceBundle('te', 'translation', { tagline: 'మీ ప్రయాణం. మీ నైపుణ్యాలు. మీ ప్లేస్‌మెంట్.' }, true, true);
+i18n.addResourceBundle('hi', 'translation', { tagline: 'आपकी यात्रा। आपके कौशल। आपका प्लेसमेंट।' }, true, true);

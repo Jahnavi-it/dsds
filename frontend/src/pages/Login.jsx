@@ -25,7 +25,7 @@ export default function Login() {
 
   return (
     <div className="card">
-      <h2>{t('login')}</h2>
+      <div className="brand"><h1>{t('appName')}</h1><p className="tagline">{t('tagline', { defaultValue: 'Your Journey. Your Skills. Your Placement.' })}</p></div><h2>{t('login')}</h2>
       <form onSubmit={submit}>
         <input placeholder={t('email')} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input placeholder={t('password')} type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />

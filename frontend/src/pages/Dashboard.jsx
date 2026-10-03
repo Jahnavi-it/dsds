@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
+import ActionEngine from '../ActionEngine.jsx';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -68,6 +69,10 @@ export default function Dashboard() {
           </Link>
         ))}
       </div>
+
+      <ActionEngine result={result} />
+
+      
 
       <div className="card">
         <h3>{t('gapChart')}</h3>

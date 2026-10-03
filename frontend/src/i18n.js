@@ -3,7 +3,7 @@ import { initReactI18next } from 'react-i18next';
 
 const resources = {
   en: { translation: {
-    appName: 'DSDS.edu',
+    appName: 'NEXORA',
     login: 'Login', register: 'Register', logout: 'Logout',
     email: 'Email', password: 'Password', name: 'Name',
     college: 'College', branch: 'Branch', year: 'Year',
@@ -11,7 +11,7 @@ const resources = {
     welcome: 'Welcome', dashboard: 'Your placement journey starts here'
   } },
   te: { translation: {
-    appName: 'DSDS.edu',
+    appName: 'NEXORA',
     login: 'లాగిన్', register: 'నమోదు చేసుకోండి', logout: 'లాగౌట్',
     email: 'ఇమెయిల్', password: 'పాస్వర్డ్', name: 'పేరు',
     college: 'కళాశాల', branch: 'బ్రాంచ్', year: 'సంవత్సరం',
@@ -19,7 +19,7 @@ const resources = {
     welcome: 'స్వాగతం', dashboard: 'మీ ప్లేస్మెంట్ ప్రయాణం ఇక్కడ మొదలవుతుంది'
   } },
   hi: { translation: {
-    appName: 'DSDS.edu',
+    appName: 'NEXORA',
     login: 'लॉगिन', register: 'रजिस्टर करें', logout: 'लॉगआउट',
     email: 'ईमेल', password: 'पासवर्ड', name: 'नाम',
     college: 'कॉलेज', branch: 'ब्रांच', year: 'वर्ष',

@@ -29,7 +29,7 @@ export default function Register() {
 
   return (
     <div className="card">
-      <h2>{t('register')}</h2>
+      <div className="brand"><h1>{t('appName')}</h1><p className="tagline">{t('tagline', { defaultValue: 'Your Journey. Your Skills. Your Placement.' })}</p></div><h2>{t('register')}</h2>
       <form onSubmit={submit}>
         <input placeholder={t('name')} value={f.name} onChange={set('name')} required />
         <input placeholder={t('email')} type="email" value={f.email} onChange={set('email')} required />
