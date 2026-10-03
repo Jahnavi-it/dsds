@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -63,6 +63,7 @@ require('./passport')(app, db, auth);
 require('./admin')(app, db, auth);
 require('./progress')(app, db, auth);
 require('./proctor')(app, db, auth);
+require('./simulator')(app, db, auth);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log('DSDS backend running on http://localhost:' + PORT));
