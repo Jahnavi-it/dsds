@@ -228,7 +228,7 @@ export default function Interview() {
     return (
       <div className="card">
         <ProctorPanel p={proctor} />
-        <span className="tag">{typeLabel(q.type || type)} | {q.kind === 'follow' ? t('followUp', { defaultValue: 'Follow-up' }) : t('mainQ', { defaultValue: 'Main question' })} #{q.index}</span>
+        <span className="tag">{typeLabel(q.type || type)}{coName(company) ? ' | ' + coName(company) : ''} | {q.kind === 'follow' ? t('followUp', { defaultValue: 'Follow-up' }) : t('mainQ', { defaultValue: 'Main question' })} #{q.index}</span>
         <p className="qtext">{q.question}</p>
         {speechSupported() && (
           <div className="stack">
