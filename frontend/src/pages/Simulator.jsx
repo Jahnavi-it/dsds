@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
+import { useProctor, ProctorPanel } from '../Proctor.jsx';
 
 const pctOf = (cats, part) => {
   const c = cats.find((x) => String(x.category).toLowerCase().includes(part));
@@ -29,6 +30,9 @@ export default function Simulator() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [out, setOut] = useState(null);
+  const [proctored, setProctored] = useState(true);
+  const finishRef = useRef(null);
+  const proctor = useProctor({ max: 3, onLimit: () => { if (finishRef.current) finishRef.current(); } });
 
   useEffect(() => {
     Promise.all([
@@ -53,13 +57,17 @@ export default function Simulator() {
 
   const start = async () => {
     setErr(''); setBusy(true);
+    if (proctored) {
+      const ok = await proctor.start();
+      if (!ok) { setErr('Camera permission was not given. Allow the camera, or turn off proctored mode.'); setBusy(false); return; }
+    }
     try {
       const d = await api('/simulator/start?company=' + encodeURIComponent(cid));
       setSession(d); setAnswers({}); setRi(0); setOut(null);
       setDeadline(Date.now() + d.rounds[0].minutes * 60000);
       setNow(Date.now());
       setPhase('running');
-    } catch (e) { setErr(e.message); }
+    } catch (e) { setErr(e.message); proctor.stop(); }
     setBusy(false);
   };
 
@@ -67,10 +75,12 @@ export default function Simulator() {
     setBusy(true);
     try {
       const d = await api('/simulator/submit', { method: 'POST', body: { sessionId: session.sessionId, answers: answers } });
-      setOut(d); setPhase('result');
-    } catch (e) { setErr(e.message); }
+      setOut(d); setPhase('result'); proctor.stop();
+    } catch (e) { setErr(e.message); proctor.stop(); }
     setBusy(false);
   };
+
+  finishRef.current = finish;
 
   const goNext = () => {
     if (!session || busy) return;
@@ -102,6 +112,7 @@ export default function Simulator() {
         <h2>{session.company}: {t('simRound', { n: ri + 1, defaultValue: 'Round {{n}}' })} / {session.rounds.length} - {rd.name}</h2>
         <div className="card">
           <strong>{t('simTimeLeft', { defaultValue: 'Time left' })}: {mm}:{ss}</strong>
+          <ProctorPanel p={proctor} />
           <p className="muted small">{t('simAutoNote', { defaultValue: 'When time ends, this round is submitted automatically and the next one starts.' })}</p>
         </div>
         {rd.questions.map((q, n) => (
@@ -133,6 +144,7 @@ export default function Simulator() {
     return (
       <div>
         <h2>{t('simReport', { defaultValue: 'Simulation report' })}: {session ? session.company : ''}</h2>
+        {proctor.limitHit && <p style={{ color: '#c92a2a' }}>Auto-submitted: too many proctoring violations (tab switch, leaving full screen or camera off).</p>}
         <div className="card">
           {all.map((r, i) => (
             <div key={r.name} className="row">
@@ -193,6 +205,9 @@ export default function Simulator() {
         </select>
         <p className="muted small">{t('simIntro', { pass: pass, defaultValue: 'Real test: Aptitude (8 Qs), Reasoning (8 Qs), Technical (12 Qs), each with its own timer. Clearing a round needs {{pass}}%.' })}</p>
         {err && <p style={{ color: '#c92a2a' }}>{err}</p>}
+        <label className="small muted" style={{ display: 'block', margin: '10px 0' }}>
+          <input type="checkbox" checked={proctored} onChange={(e) => setProctored(e.target.checked)} style={{ width: 'auto' }} /> Proctored mode (camera + full screen + tab-switch warnings)
+        </label>
         <button className="primary wide" onClick={start} disabled={busy || !cid}>{busy ? '...' : t('simStart', { defaultValue: 'Start simulation' })}</button>
       </div>
 

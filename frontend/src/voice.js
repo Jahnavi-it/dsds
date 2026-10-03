@@ -32,7 +32,7 @@ export function stopSpeaking() {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
 }
 
-export function listen({ lang, onResult, onError, onEnd }) {
+export function listen({ lang, continuous, onResult, onError, onEnd }) {
   const Rec = SR();
   if (!Rec) {
     if (onError) onError('unsupported');
@@ -43,7 +43,12 @@ export function listen({ lang, onResult, onError, onEnd }) {
   rec.lang = langCode(lang);
   rec.interimResults = false;
   rec.maxAlternatives = 1;
-  rec.onresult = (e) => onResult && onResult(e.results[0][0].transcript);
+  rec.continuous = !!continuous;
+  rec.onresult = (e) => {
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal && onResult) onResult(e.results[i][0].transcript.trim());
+    }
+  };
   rec.onerror = (e) => onError && onError(e.error);
   rec.onend = () => onEnd && onEnd();
   try {
