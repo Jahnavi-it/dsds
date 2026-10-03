@@ -83,3 +83,27 @@ i18n.addResourceBundle('te', 'translation', {
 i18n.addResourceBundle('hi', 'translation', {
   matrixTitle: '{{name}} तैयारी मैट्रिक्स', matrixNotAssessed: 'आकलन नहीं हुआ', matrixGap: 'आपकी तैयारी की कमी', matrixPrepare: '{{name}} की तैयारी करें'
 }, true, true);
+i18n.addResourceBundle('en', 'translation', {
+  mistakeBook: 'Mistake book', noMistakes: 'No mistakes saved yet. Wrong answers from your mock tests appear here, and disappear once you answer them correctly.', filterAll: 'All', practiceMore: 'Practice more in a mock test'
+}, true, true);
+i18n.addResourceBundle('te', 'translation', {
+  mistakeBook: 'తప్పుల పుస్తకం', noMistakes: 'ఇంకా తప్పులు సేవ్ కాలేదు. మాక్ టెస్ట్‌లో తప్పు సమాధానాలు ఇక్కడ కనిపిస్తాయి, సరిగ్గా రాసిన తర్వాత తొలగిపోతాయి.', filterAll: 'అన్నీ', practiceMore: 'మాక్ టెస్ట్‌లో మరింత ప్రాక్టీస్ చేయండి'
+}, true, true);
+i18n.addResourceBundle('hi', 'translation', {
+  mistakeBook: 'गलतियों की किताब', noMistakes: 'अभी कोई गलती सेव नहीं हुई। मॉक टेस्ट के गलत उत्तर यहाँ दिखेंगे और सही करने पर हट जाएंगे।', filterAll: 'सभी', practiceMore: 'मॉक टेस्ट में और अभ्यास करें'
+}, true, true);
+i18n.addResourceBundle('en', 'translation', {
+  growthTitle: 'My growth', achievements: 'Achievements', progressHistory: 'Mock test progress', interviewReadiness: 'Interview readiness', learningPath: 'Learning path',
+  simTitle: 'Placement simulator', simReport: 'Simulation report', simTarget: 'Target company', simOverall: 'Overall', simNeeds: 'Needs improvement', simNext: 'Recommended next step',
+  navGrowth: 'My growth', navSim: 'Simulator'
+}, true, true);
+i18n.addResourceBundle('te', 'translation', {
+  growthTitle: 'నా పురోగతి', achievements: 'విజయాలు', progressHistory: 'మాక్ టెస్ట్ పురోగతి', interviewReadiness: 'ఇంటర్వ్యూ సన్నద్ధత', learningPath: 'లెర్నింగ్ పాత్',
+  simTitle: 'ప్లేస్‌మెంట్ సిమ్యులేటర్', simReport: 'సిమ్యులేషన్ నివేదిక', simTarget: 'లక్ష్య కంపెనీ', simOverall: 'మొత్తం', simNeeds: 'మెరుగుపరచాల్సినవి', simNext: 'తదుపరి సిఫార్సు',
+  navGrowth: 'నా పురోగతి', navSim: 'సిమ్యులేటర్'
+}, true, true);
+i18n.addResourceBundle('hi', 'translation', {
+  growthTitle: 'मेरी प्रगति', achievements: 'उपलब्धियाँ', progressHistory: 'मॉक टेस्ट प्रगति', interviewReadiness: 'इंटरव्यू तैयारी', learningPath: 'लर्निंग पाथ',
+  simTitle: 'प्लेसमेंट सिमुलेटर', simReport: 'सिमुलेशन रिपोर्ट', simTarget: 'लक्ष्य कंपनी', simOverall: 'कुल', simNeeds: 'सुधार चाहिए', simNext: 'अगला सुझाव',
+  navGrowth: 'मेरी प्रगति', navSim: 'सिमुलेटर'
+}, true, true);

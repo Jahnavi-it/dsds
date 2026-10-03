@@ -76,6 +76,13 @@ module.exports = function (app, db, auth) {
     });
   });
 
+  db.exec('CREATE TABLE IF NOT EXISTS mistakes (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, cat TEXT, question TEXT NOT NULL, options TEXT NOT NULL, answer INTEGER NOT NULL, chosen INTEGER NOT NULL, explanation TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id, question));');
+
+  app.get('/api/mistakes', auth, (req, res) => {
+    const rows = db.prepare('SELECT id, cat, question, options, answer, chosen, explanation, created_at FROM mistakes WHERE user_id = ? ORDER BY id DESC').all(req.user.id);
+    res.json({ mistakes: rows.map((r) => ({ ...r, options: JSON.parse(r.options) })) });
+  });
+
   app.post('/api/mock/submit', auth, (req, res) => {
     const { sessionId, answers } = req.body || {};
     const s = db.prepare('SELECT * FROM mock_sessions WHERE id = ? AND user_id = ?').get(Number(sessionId), req.user.id);
@@ -99,6 +106,14 @@ module.exports = function (app, db, auth) {
     db.prepare('UPDATE mock_sessions SET submitted = 1 WHERE id = ?').run(s.id);
     db.prepare('INSERT INTO mock_attempts (user_id, company, score, total, seconds, data) VALUES (?,?,?,?,?,?)')
       .run(req.user.id, s.company, score, qs.length, seconds, JSON.stringify(categories));
+    review.forEach((r) => {
+      if (r.chosen === r.answer) {
+        db.prepare('DELETE FROM mistakes WHERE user_id = ? AND question = ?').run(req.user.id, r.question);
+      } else {
+        db.prepare('INSERT OR REPLACE INTO mistakes (user_id, cat, question, options, answer, chosen, explanation) VALUES (?,?,?,?,?,?,?)')
+          .run(req.user.id, r.cat, r.question, JSON.stringify(r.options), r.answer, r.chosen, r.explanation || '');
+      }
+    });
     res.json({ score, total: qs.length, percent: Math.round((score / qs.length) * 100), seconds, late, categories, review });
   });
 

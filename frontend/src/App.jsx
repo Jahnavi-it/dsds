@@ -21,6 +21,9 @@ import Coding from './pages/Coding.jsx';
 import Notes from './pages/Notes.jsx';
 import Verify from './pages/Verify.jsx';
 import Sidebar from './Sidebar.jsx';
+import Mistakes from './pages/Mistakes.jsx';
+import Growth from './pages/Growth.jsx';
+import Simulator from './pages/Simulator.jsx';
 import './i18nExtra.js';
 import VoiceAssistant from './VoiceAssistant.jsx';
 
@@ -82,7 +85,8 @@ export default function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/mock" element={<Mock />} />
           <Route path="/progress" element={<Progress />} />
-<Route path="/interview" element={<Interview />} /><Route path="/resume" element={<Resume />} /><Route path="/passport" element={<Passport />} /><Route path="/coding" element={<Coding />} /><Route path="/notes" element={<Notes />} /><Route path="/notes/:id" element={<Notes />} /><Route path="/verify/:code" element={<Verify />} /><Route path="/verify" element={<Verify />} />
+<Route path="/interview" element={<Interview />} /><Route path="/mistakes" element={<Mistakes />} /><Route path="/growth" element={<Growth />} /><Route path="/simulator" element={<Simulator />} />
+        <Route path="/resume" element={<Resume />} /><Route path="/passport" element={<Passport />} /><Route path="/coding" element={<Coding />} /><Route path="/notes" element={<Notes />} /><Route path="/notes/:id" element={<Notes />} /><Route path="/verify/:code" element={<Verify />} /><Route path="/verify" element={<Verify />} />
         </Routes>
 {token && <VoiceAssistant />}
       </main>
