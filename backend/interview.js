@@ -99,7 +99,10 @@ module.exports = function (app, db, auth) {
   app.post('/api/interview/start', auth, (req, res) => {
     const type = req.body && req.body.type === 'hr' ? 'hr' : 'tech';
     const company = String((req.body && req.body.company) || '').slice(0, 30);
-    const main = shuffle(type === 'hr' ? HR : TECH).slice(0, 6);
+    const base = type === 'hr' ? HR : TECH;
+    const cq = ((require('./interview_companies')[company] || {})[type]) || [];
+    const main = shuffle(cq).slice(0, 6);
+    if (main.length < 6) shuffle(base).filter((b) => !main.some((m) => m.q === b.q)).slice(0, 6 - main.length).forEach((b) => main.push(b));
     const s = { main, mi: 1, asked: [{ q: main[0].q, kind: 'main', kw: main[0].kw, a: main[0].a }], pending: [], used: [] };
     const r = db.prepare('INSERT INTO interview_sessions (user_id, type, company, data) VALUES (?,?,?,?)')
       .run(req.user.id, type, company, JSON.stringify(s));

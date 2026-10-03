@@ -34,9 +34,13 @@ export default function Interview() {
   const [fb, setFb] = useState(null);
   const [pending, setPending] = useState(null);
   const [proctored, setProctored] = useState(true);
+  const [company, setCompany] = useState(localStorage.getItem('target') || '');
+  const [companies, setCompanies] = useState([]);
   const recRef = useRef(null);
   const endRef = useRef(null);
   const proctor = useProctor({ max: 3, onLimit: () => { if (endRef.current) endRef.current(); } });
+
+  useEffect(() => { api('/companies').then((d) => setCompanies(d.companies)).catch(() => {}); }, []);
 
   const loadHistory = () =>
     api('/interview/history').then((d) => setHistory(d.history)).catch(() => nav('/login'));
@@ -69,7 +73,7 @@ export default function Interview() {
     try {
       const d = await api('/interview/start', {
         method: 'POST',
-        body: { type, company: localStorage.getItem('target') || '' }
+        body: { type, company }
       });
       setSessionId(d.sessionId);
       setQ(d);
@@ -151,13 +155,14 @@ export default function Interview() {
     setError('Interview ended: too many proctoring violations (tab switch, leaving full screen or camera off).');
   };
 
+  const coName = (id) => { const c = companies.find((x) => x.id === id); return c ? c.name : ''; };
   const typeLabel = (v) => (v === 'hr' ? 'HR' : t('technical', { defaultValue: 'Technical' }));
 
   if (result) {
     return (
       <div>
         <div className="card">
-          <h2>{typeLabel(result.type)} - {t('interviewScore', { defaultValue: 'Interview score' })}: {result.score}%</h2>
+          <h2>{typeLabel(result.type)}{coName(company) ? ' (' + coName(company) + ')' : ''} - {t('interviewScore', { defaultValue: 'Interview score' })}: {result.score}%</h2>
           <div className="bar"><div className="fill" style={{ width: result.score + '%' }} /></div>
           <p className="muted">{t('avgWords', { defaultValue: 'Average answer length' })}: {result.avgWords} {t('wordsUnit', { defaultValue: 'words' })}</p>
           <ul className="notes">
@@ -276,6 +281,12 @@ export default function Interview() {
           <button className={'chip' + (type === 'hr' ? ' active' : '')} style={chip('hr')} onClick={() => setType('hr')}>HR</button>
         </div>
         <p className="small muted">Selected: <strong>{typeLabel(type)}</strong> interview</p>
+        <label className="small muted" style={{ display: 'block', marginTop: 10 }}>Company</label>
+        <select value={company} onChange={(e) => { setCompany(e.target.value); localStorage.setItem('target', e.target.value); }} style={{ width: '100%', margin: '6px 0 10px' }}>
+          <option value="">General (no specific company)</option>
+          {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
+        <p className="small muted">Questions follow each company's usual interview style. They are practice questions based on commonly reported patterns, not official company papers.</p>
         {speechSupported() && (
           <label className="small muted" style={{ display: 'block', marginTop: 12 }}>
             <input type="checkbox" checked={voiceOn} onChange={(e) => setVoiceOn(e.target.checked)} style={{ width: 'auto' }} /> {t('readAloud', { defaultValue: 'Read questions aloud' })}
@@ -292,7 +303,7 @@ export default function Interview() {
           <h3>{t('recentInterviews', { defaultValue: 'Recent interviews' })}</h3>
           {history.map((h) => (
             <div key={h.id} className="rowhead row">
-              <span>{typeLabel(h.type)}{h.company ? ' - ' + h.company : ''}</span>
+              <span>{typeLabel(h.type)}{h.company ? ' - ' + (coName(h.company) || h.company) : ''}</span>
               <span>{h.score}%</span>
             </div>
           ))}
