@@ -266,7 +266,12 @@ export default function Mock() {
         <strong className={left <= 60 ? 'timer low' : 'timer'}>{t('timeLeft')}: {fmt(left)}</strong>
         <span className="muted">{done} / {session.questions.length}</span>
         {proctoredRef.current && <span className="muted small">{t('violations')}: {viol} / {MAX_VIOLATIONS}</span>}
-        {warn && <div className="error" style={{ width: '100%' }}>{t(warn)}</div>}
+        {warn && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1200, background: '#c92a2a', color: '#fff', padding: '12px 16px', fontWeight: 600, textAlign: 'center' }}>
+          {t(warn)} ({viol} / {MAX_VIOLATIONS})
+          <button onClick={() => setWarn('')} style={{ marginLeft: 12 }}>OK</button>
+        </div>
+      )}
         {proctoredRef.current && !isFs && (
           <button className="primary" onClick={goFs}>{t('backFs')}</button>
         )}
