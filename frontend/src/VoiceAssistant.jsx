@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { listen, speak, speechSupported, stopSpeaking } from './voice.js';
+import { listen, speak, speechSupported, stopSpeaking, voiceErrorText } from './voice.js';
 
 // Order matters: first match wins (mock before interview).
 const COMMANDS = [
@@ -59,7 +59,7 @@ export default function VoiceAssistant() {
     recRef.current = listen({
       lang: 'en',
       onResult: handle,
-      onError: (e) => setMsg(e === 'not-allowed' ? t('voiceDenied', { defaultValue: 'Microphone permission denied.' }) : t('voiceError', { defaultValue: 'Voice error: ' }) + e),
+      onError: (e) => setMsg(voiceErrorText(e)),
       onEnd: () => setOn(false)
     });
   }

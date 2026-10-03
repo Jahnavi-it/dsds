@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
-import { listen, speak, speechSupported, stopSpeaking } from '../voice.js';
+import { listen, speak, speechSupported, stopSpeaking, voiceErrorText } from '../voice.js';
 
 const TIPS = {
   short: 'Your answers were short. Aim for 40-60 words with a clear example.',
@@ -91,7 +91,7 @@ export default function Interview() {
     recRef.current = listen({
       lang: i18n.language,
       onResult: (txt) => setAnswer((a) => (a ? a + ' ' : '') + txt),
-      onError: () => setListening(false),
+      onError: (e) => { setListening(false); const m = voiceErrorText(e); if (m) alert(m); },
       onEnd: () => setListening(false)
     });
   };
