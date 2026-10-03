@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import CompanyMatrix from '../CompanyMatrix.jsx';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 
@@ -20,6 +21,7 @@ export default function Company() {
       <div className="card">
         <Link to="/companies">&larr; {t('back')}</Link>
         <h2>{c.name}</h2>
+      <CompanyMatrix company={c} />
         <span className={'badge ' + c.type}>{t('type_' + c.type)}</span>
         <p className="muted small">{t('disclaimerCompany')}</p>
       </div>

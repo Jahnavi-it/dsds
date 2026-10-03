@@ -74,3 +74,12 @@ i18n.addResourceBundle('hi', 'translation', {
   missionPractice: 'अभ्यास: एक मॉक टेस्ट दें', missionCoding: 'कोडिंग: 1 आसान समस्या हल करें', missionInterview: 'इंटरव्यू: 2 HR प्रश्नों के उत्तर दें',
   missionProgress: '{{done}}/{{total}} पूरे', missionOpen: 'खोलें'
 }, true, true);
+i18n.addResourceBundle('en', 'translation', {
+  matrixTitle: '{{name}} readiness matrix', matrixNotAssessed: 'Not assessed', matrixGap: 'Your preparation gap', matrixPrepare: 'Prepare for {{name}}'
+}, true, true);
+i18n.addResourceBundle('te', 'translation', {
+  matrixTitle: '{{name}} సన్నద్ధత మ్యాట్రిక్స్', matrixNotAssessed: 'అంచనా వేయలేదు', matrixGap: 'మీ ప్రిపరేషన్ లోపం', matrixPrepare: '{{name}} కోసం సిద్ధం అవ్వండి'
+}, true, true);
+i18n.addResourceBundle('hi', 'translation', {
+  matrixTitle: '{{name}} तैयारी मैट्रिक्स', matrixNotAssessed: 'आकलन नहीं हुआ', matrixGap: 'आपकी तैयारी की कमी', matrixPrepare: '{{name}} की तैयारी करें'
+}, true, true);
