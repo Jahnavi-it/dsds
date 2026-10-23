@@ -36,4 +36,5 @@ if (process.env.SEED_EMAIL && process.env.SEED_PASSWORD) {
     console.log('Seeded demo account');
   }
 }
+require('./persist').watch(db);
 module.exports = db;
