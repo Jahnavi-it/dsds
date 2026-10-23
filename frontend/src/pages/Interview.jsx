@@ -19,7 +19,7 @@ const VERDICT = {
 };
 
 export default function Interview() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const nav = useNavigate();
   const [type, setType] = useState('tech');
   const [sessionId, setSessionId] = useState(null);
@@ -55,7 +55,7 @@ export default function Interview() {
   }, []);
 
   useEffect(() => {
-    if (voiceOn && q && !fb) speak(q.question, i18n.language);
+    if (voiceOn && q && !fb) speak(q.question, 'en');
     // eslint-disable-next-line
   }, [q, voiceOn]);
 
@@ -131,7 +131,7 @@ export default function Interview() {
     setError('');
     setListening(true);
     recRef.current = listen({
-      lang: i18n.language,
+      lang: 'en',
       continuous: true,
       onResult: (txt) => setAnswer((a) => (a ? a + ' ' : '') + txt),
       onError: (e) => { setListening(false); const m = voiceErrorText(e); if (m) setError(m); },
@@ -234,7 +234,7 @@ export default function Interview() {
         <p className="qtext">{q.question}</p>
         {speechSupported() && (
           <div className="stack">
-            <button className="secondary linkbtn" onClick={() => speak(q.question, i18n.language)}>Listen to question</button>
+            <button className="secondary linkbtn" onClick={() => speak(q.question, 'en')}>Listen to question</button>
             <label className="small muted">
               <input type="checkbox" checked={voiceOn} onChange={(e) => setVoiceOn(e.target.checked)} style={{ width: 'auto' }} /> {t('readAloud', { defaultValue: 'Read questions aloud' })}
             </label>
