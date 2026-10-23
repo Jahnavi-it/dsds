@@ -21,7 +21,7 @@ export default function Coding() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  const load = () => api('/coding/problems').then((d) => { setList(d.problems); setLangs(d.languages); }).catch(() => nav('/login'));
+  const load = () => api('/coding/problems').then((d) => { setList(d.problems); setLangs(d.languages); setLang((prev) => (d.languages.some((l) => l.id === prev) ? prev : (d.languages[0] || {}).id || prev)); }).catch(() => nav('/login'));
   useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
 
   const starter = (l) => (langs.find((x) => x.id === l) || {}).starter || '';
@@ -136,7 +136,7 @@ export default function Coding() {
   return (
     <div className="card">
       <h2>{t('codingPractice', { defaultValue: 'Coding practice' })}</h2>
-      <p className="muted small">{done}/{list.length} {t('solvedLabel', { defaultValue: 'solved' })} | C, C++, Java, Python, JavaScript</p>
+      <p className="muted small">{done}/{list.length} {t('solvedLabel', { defaultValue: 'solved' })} | {langs.map((l) => l.name).join(', ')}</p>
       {list.map((p) => (
         <div key={p.id} className="subjhead row">
           <span className={'tick' + (p.solved ? ' done' : '')}>{p.solved ? '✓' : ''}</span>

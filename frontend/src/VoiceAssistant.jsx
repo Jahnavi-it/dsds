@@ -14,7 +14,7 @@ const COMMANDS = [
   { path: '/mistakes', words: ['mistake', 'mistakes'] },
   { path: '/growth', words: ['growth', 'grow'] },
   { path: '/simulator', words: ['simulator', 'simulation', 'drive'] },
-  { path: '/result', words: ['roadmap', 'result', 'results'] },
+  { path: '/result', words: ['roadmap', 'road map', 'result', 'results'] },
   { path: '/assessment', words: ['assessment', 'assess', 'test', 'exam', 'skill'] },
   { path: '/companies', words: ['company', 'companies', 'preparation', 'placement'] },
   { path: '/learn', words: ['learn', 'learning', 'hub', 'lesson', 'study', 'course'] },

@@ -120,8 +120,28 @@ async function runLocal(lang, code, inputs) {
   }
 }
 
+// Judge0 is used only when you set JUDGE0_URL (or EXEC_MODE=judge0). Otherwise code runs on this server.
+const useJudge0 = () => process.env.EXEC_MODE === 'judge0' || (!!process.env.JUDGE0_URL && process.env.EXEC_MODE !== 'local');
+
 async function execute(lang, code, inputs) {
-  return (process.env.EXEC_MODE === 'local') ? runLocal(lang, code, inputs) : runJudge0(lang, code, inputs);
+  return useJudge0() ? runJudge0(lang, code, inputs) : runLocal(lang, code, inputs);
+}
+
+// Which languages can this server actually run? (checked once at startup)
+const { spawnSync } = require('child_process');
+let available = null;
+function availableLangs() {
+  if (available) return available;
+  if (useJudge0()) { available = Object.keys(LANGS); return available; }
+  available = Object.keys(LANGS).filter((id) => {
+    const l = LANGS[id];
+    const cmd = l.compile ? l.compile[0] : l.run[0];
+    const flag = cmd === 'javac' ? '-version' : '--version';
+    const r = spawnSync(cmd, [flag], { timeout: 5000, stdio: 'ignore' });
+    return !r.error && r.status === 0;
+  });
+  console.log('Coding languages available on this server:', available.join(', ') || 'none');
+  return available;
 }
 
 module.exports = function (app, db, auth) {
@@ -130,7 +150,7 @@ module.exports = function (app, db, auth) {
   app.get('/api/coding/problems', auth, (req, res) => {
     const solved = db.prepare('SELECT pid FROM coding_solved WHERE user_id = ?').all(req.user.id).map((r) => r.pid);
     res.json({
-      languages: Object.keys(LANGS).map((id) => ({ id, name: LANGS[id].name, starter: LANGS[id].starter })),
+      languages: availableLangs().map((id) => ({ id, name: LANGS[id].name, starter: LANGS[id].starter })),
       problems: PROBLEMS.map((p) => ({ ...p, solved: solved.includes(p.id) }))
     });
   });
@@ -143,7 +163,7 @@ module.exports = function (app, db, auth) {
     const lang = LANGS[String(b.language || '')];
     const code = typeof b.code === 'string' ? b.code : '';
     if (!p) return res.status(404).json({ error: 'Unknown problem' });
-    if (!lang) return res.status(400).json({ error: 'Choose C, C++, Java, Python or JavaScript' });
+    if (!lang || !availableLangs().includes(String(b.language))) return res.status(400).json({ error: 'This language is not available on the server. Choose another language.' });
     if (!code.trim()) return res.status(400).json({ error: 'Write some code first' });
     if (code.length > MAX_CODE) return res.status(400).json({ error: 'Code is too long' });
 
