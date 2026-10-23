@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { certificatePdf } = require('./pdf_docs');
 
 const CERTS = {
   assessment: { title: 'Skill Assessment Completion', need: 'Complete the placement assessment', ok: (x) => x.assessed },
@@ -74,6 +75,18 @@ module.exports = function (app, db, auth) {
       row = { code };
     }
     res.json({ ok: true, code: row.code });
+  });
+
+  // public: download the certificate as a PDF (the code is the access key; the name is already public on the verify page)
+  app.get('/api/certificates/:code/pdf', async (req, res) => {
+    const r = db.prepare('SELECT c.type, c.code, c.issued_at, u.name, u.college, u.branch FROM certificates c JOIN users u ON u.id = c.user_id WHERE c.code = ?').get(String(req.params.code).toUpperCase());
+    if (!r || !CERTS[r.type]) return res.status(404).json({ error: 'Certificate not found' });
+    const site = (process.env.PUBLIC_URL || (process.env.FRONTEND_URL || '').split(',')[0] || 'https://dsds-chi.vercel.app').trim().replace(/\/$/, '');
+    try {
+      await certificatePdf(res, { name: r.name, college: r.college, branch: r.branch, title: CERTS[r.type].title, need: CERTS[r.type].need, code: r.code, issued_at: r.issued_at, verifyUrl: site + '/verify/' + r.code });
+    } catch (e) {
+      if (!res.headersSent) res.status(500).json({ error: 'Could not create the certificate PDF' });
+    }
   });
 
   // public: anyone can check a certificate code

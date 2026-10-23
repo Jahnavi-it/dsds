@@ -39,8 +39,8 @@ module.exports = {
     T(['binary', 'search', 'graph', 'sort'], [F('Can you improve the time or space complexity of your solution?', ['optimi', 'space', 'time', 'heap', 'hash'], 'Look for a better data structure such as a hash map or heap, or trade space for time.'), F('How would your approach scale to billions of inputs?', ['distribut', 'shard', 'parallel', 'map', 'partition'], 'Partition the data, process in parallel with a map-reduce style approach and merge the results.')]),
     H(['impact', 'learn', 'team'], [F('How did you measure the success of that work?', ['metric', 'users', 'result', 'data', 'impact'], 'Name a metric, such as usage or time saved, and how you tracked it.')])
   ],
-  zoho: [
-    T(['loop', 'program', 'array', 'string'], [F('Can you write this without extra memory?', ['in place', 'pointer', 'swap', 'space', 'loop'], 'Use two pointers and swap in place so the extra space is O(1).'), F('What test cases would you try for your program?', ['empty', 'single', 'negative', 'large', 'edge'], 'Try empty input, a single element, negative values, very large input and other edge cases.')]),
-    H(['learn', 'build', 'project'], [F('What was the hardest bug in something you built, and how did you fix it?', ['bug', 'debug', 'cause', 'fix', 'learn'], 'Describe the bug, how you traced its cause, the fix and what you learned.')])
+  hcl: [
+    T(['loop', 'program', 'array', 'string', 'sql', 'database'], [F('Can you give a real example where you used this concept?', ['project', 'example', 'used', 'application', 'result'], 'Describe a project or assignment where you applied it and what the outcome was.'), F('What test cases or edge cases would you check?', ['empty', 'single', 'negative', 'large', 'edge'], 'Try empty input, a single element, negative values, very large input and other edge cases.')]),
+    H(['learn', 'team', 'project', 'relocat'], [F('How do you adapt to a new team or a new location quickly?', ['adapt', 'learn', 'team', 'flexible', 'communicate'], 'Stay open, ask questions early, learn the team process and communicate regularly.')])
   ]
 };

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const db = require('./db');
 
 const app = express();
-app.use(cors(process.env.FRONTEND_URL ? { origin: process.env.FRONTEND_URL.split(',') } : undefined));
+app.use(cors({ ...(process.env.FRONTEND_URL ? { origin: process.env.FRONTEND_URL.split(',') } : {}), exposedHeaders: ['Content-Disposition'] }));
 app.use(express.json());
 
 const sign = (u) => jwt.sign({ id: u.id, role: u.role }, process.env.JWT_SECRET, { expiresIn: '7d' });

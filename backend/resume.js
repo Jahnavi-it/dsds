@@ -1,3 +1,5 @@
+const { resumePdf } = require('./pdf_docs');
+
 module.exports = function (app, db, auth) {
   db.exec('CREATE TABLE IF NOT EXISTS resumes (user_id INTEGER PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT DEFAULT CURRENT_TIMESTAMP);');
 
@@ -14,5 +16,10 @@ module.exports = function (app, db, auth) {
     db.prepare('INSERT INTO resumes (user_id, data) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated_at = CURRENT_TIMESTAMP')
       .run(req.user.id, text);
     res.json({ ok: true });
+  });
+  app.get('/api/resume/pdf', auth, (req, res) => {
+    const r = db.prepare('SELECT data FROM resumes WHERE user_id = ?').get(req.user.id);
+    if (!r) return res.status(404).json({ error: 'Save your resume first' });
+    try { resumePdf(res, JSON.parse(r.data)); } catch (e) { if (!res.headersSent) res.status(500).json({ error: 'Could not create the resume PDF' }); }
   });
 };

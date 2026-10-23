@@ -135,20 +135,20 @@ const COMPANIES = [
       Q('In how many ways can you climb 5 stairs taking 1 or 2 steps at a time?', ['5', '8', '10', '13'], 1, 'Ways follow Fibonacci: 1, 2, 3, 5, 8.'),
       Q('About how many comparisons does binary search need in the worst case for 1000 sorted elements?', ['5', '10', '100', '500'], 1, 'log2(1000) is about 10.')
     ] },
-  { id: 'zoho', name: 'Zoho', type: 'product',
-    focus: ['c', 'dsa', 'aptitude', 'reasoning', 'oops'],
+  { id: 'hcl', name: 'HCL', type: 'service',
+    focus: ['aptitude', 'reasoning', 'verbal', 'c', 'dbms'],
     rounds: [
-      { name: 'Written round', detail: 'Aptitude and C-style output-tracing questions, plus logic problems.' },
-      { name: 'Programming rounds', detail: 'Several rounds where you write complete working programs, usually without much help from libraries.' },
-      { name: 'Technical and HR interview', detail: 'Code discussion, fundamentals, projects and attitude.' }
+      { name: 'Online assessment', detail: 'Aptitude, logical reasoning and verbal ability sections, plus technical MCQs and basic coding questions.' },
+      { name: 'Technical interview', detail: 'Programming basics, DBMS, OOPs, networking and a discussion of your final-year project.' },
+      { name: 'HR interview', detail: 'Communication, strengths and weaknesses, relocation and shift flexibility, and why you want to join.' }
     ],
-    tips: ['Practise writing full programs by hand: patterns, strings, arrays, matrices.', 'Be strong in basics: pointers, loops, recursion.', 'Focus on logic building over memorising.'],
+    tips: ['Practise timed aptitude and reasoning sections daily.', 'Revise C or Java basics, DBMS queries and OOPs concepts.', 'Prepare a clear self-introduction and know your project well.'],
     questions: [
-      Q('In C, what does the following print? int x = 7; x = x >> 1; printf("%d", x);', ['2', '3', '4', '7'], 1, 'Right shift by 1 divides by 2: 7 >> 1 = 3.'),
-      Q('How many times does this loop run? for (i = 1; i <= 100; i *= 2)', ['6', '7', '8', '100'], 1, 'i takes 1, 2, 4, 8, 16, 32, 64: seven values.'),
-      Q('Reversing a string with a stack works because a stack is:', ['FIFO', 'LIFO', 'Sorted', 'Random'], 1, 'Last in, first out reverses the order.'),
-      Q('What is the sum of the digits of 2^10?', ['5', '7', '9', '10'], 1, '2^10 = 1024 and 1 + 0 + 2 + 4 = 7.'),
-      Q('Which of these numbers is NOT prime?', ['83', '89', '91', '97'], 2, '91 = 7 x 13.')
+      Q('A train 150 m long passes a pole in 10 seconds. What is its speed in km/h?', ['45', '54', '60', '72'], 1, 'Speed = 150/10 = 15 m/s = 15 x 18/5 = 54 km/h.'),
+      Q('Find the next number: 2, 6, 12, 20, 30, ?', ['38', '40', '42', '44'], 2, 'Differences are 4, 6, 8, 10, so the next is 30 + 12 = 42.'),
+      Q('Which SQL clause is used to filter groups after GROUP BY?', ['WHERE', 'HAVING', 'ORDER BY', 'LIMIT'], 1, 'HAVING filters groups; WHERE filters rows before grouping.'),
+      Q('In C, what does the following print? int a = 5; printf("%d", a++ + ++a);', ['10', '11', '12', 'Undefined behaviour'], 3, 'Modifying a variable twice between sequence points is undefined behaviour in C.'),
+      Q('Choose the correct word: He is senior ___ me.', ['than', 'to', 'from', 'with'], 1, 'The adjective senior is followed by "to", not "than".')
     ] }
 ];
 

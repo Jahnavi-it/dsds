@@ -1,0 +1,912 @@
+[
+ {
+  "id": "twosum",
+  "title": "Two Sum",
+  "level": "Easy",
+  "desc": "Given an array of n integers and a target, print the indices i and j (i < j, 0-based) of the two numbers that add up to the target. Exactly one answer exists.",
+  "inputFormat": "Line 1: n\nLine 2: n integers\nLine 3: target",
+  "outputFormat": "Two space-separated indices: i j",
+  "tests": [
+   {
+    "input": "4\n2 7 11 15\n9\n",
+    "output": "0 1\n"
+   },
+   {
+    "input": "3\n3 2 4\n6\n",
+    "output": "1 2\n"
+   },
+   {
+    "input": "2\n3 3\n6\n",
+    "output": "0 1\n"
+   }
+  ],
+  "sample": {
+   "input": "4\n2 7 11 15\n9\n",
+   "output": "0 1\n"
+  }
+ },
+ {
+  "id": "reverse",
+  "title": "Reverse a String",
+  "level": "Easy",
+  "desc": "Read a word and print it reversed.",
+  "inputFormat": "One word (no spaces)",
+  "outputFormat": "The reversed word",
+  "tests": [
+   {
+    "input": "hello\n",
+    "output": "olleh\n"
+   },
+   {
+    "input": "programming\n",
+    "output": "gnimmargorp\n"
+   },
+   {
+    "input": "ab\n",
+    "output": "ba\n"
+   }
+  ],
+  "sample": {
+   "input": "hello\n",
+   "output": "olleh\n"
+  }
+ },
+ {
+  "id": "palindrome",
+  "title": "Palindrome Check",
+  "level": "Easy",
+  "desc": "Read a word and check whether it is a palindrome. Ignore upper/lower case.",
+  "inputFormat": "One word (letters or digits)",
+  "outputFormat": "YES if it is a palindrome, otherwise NO",
+  "tests": [
+   {
+    "input": "madam\n",
+    "output": "YES\n"
+   },
+   {
+    "input": "hello\n",
+    "output": "NO\n"
+   },
+   {
+    "input": "Level\n",
+    "output": "YES\n"
+   }
+  ],
+  "sample": {
+   "input": "madam\n",
+   "output": "YES\n"
+  }
+ },
+ {
+  "id": "fizzbuzz",
+  "title": "FizzBuzz",
+  "level": "Easy",
+  "desc": "Print the numbers from 1 to n, one per line. For multiples of 3 print Fizz, for multiples of 5 print Buzz, for multiples of both print FizzBuzz.",
+  "inputFormat": "One integer n",
+  "outputFormat": "n lines as described",
+  "tests": [
+   {
+    "input": "3\n",
+    "output": "1\n2\nFizz\n"
+   },
+   {
+    "input": "5\n",
+    "output": "1\n2\nFizz\n4\nBuzz\n"
+   },
+   {
+    "input": "15\n",
+    "output": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n"
+   }
+  ],
+  "sample": {
+   "input": "3\n",
+   "output": "1\n2\nFizz\n"
+  }
+ },
+ {
+  "id": "max",
+  "title": "Maximum in Array",
+  "level": "Easy",
+  "desc": "Find and print the largest number in the array.",
+  "inputFormat": "Line 1: n\nLine 2: n integers",
+  "outputFormat": "The maximum value",
+  "tests": [
+   {
+    "input": "3\n3 9 2\n",
+    "output": "9\n"
+   },
+   {
+    "input": "3\n-5 -1 -9\n",
+    "output": "-1\n"
+   },
+   {
+    "input": "1\n7\n",
+    "output": "7\n"
+   }
+  ],
+  "sample": {
+   "input": "3\n3 9 2\n",
+   "output": "9\n"
+  }
+ },
+ {
+  "id": "vowels",
+  "title": "Count Vowels",
+  "level": "Easy",
+  "desc": "Count the vowels (a, e, i, o, u in any case) in the given word.",
+  "inputFormat": "One word (no spaces)",
+  "outputFormat": "The number of vowels",
+  "tests": [
+   {
+    "input": "hello\n",
+    "output": "2\n"
+   },
+   {
+    "input": "sky\n",
+    "output": "0\n"
+   },
+   {
+    "input": "AEIOU\n",
+    "output": "5\n"
+   }
+  ],
+  "sample": {
+   "input": "hello\n",
+   "output": "2\n"
+  }
+ },
+ {
+  "id": "factorial",
+  "title": "Factorial",
+  "level": "Easy",
+  "desc": "Print n! (factorial of n). 0! is 1. n is at most 15.",
+  "inputFormat": "One integer n (0 to 15)",
+  "outputFormat": "n!",
+  "tests": [
+   {
+    "input": "0\n",
+    "output": "1\n"
+   },
+   {
+    "input": "5\n",
+    "output": "120\n"
+   },
+   {
+    "input": "12\n",
+    "output": "479001600\n"
+   }
+  ],
+  "sample": {
+   "input": "0\n",
+   "output": "1\n"
+  }
+ },
+ {
+  "id": "fibonacci",
+  "title": "Nth Fibonacci",
+  "level": "Easy",
+  "desc": "Print the nth Fibonacci number where fib(0) = 0 and fib(1) = 1. n is at most 40.",
+  "inputFormat": "One integer n (0 to 40)",
+  "outputFormat": "fib(n)",
+  "tests": [
+   {
+    "input": "0\n",
+    "output": "0\n"
+   },
+   {
+    "input": "10\n",
+    "output": "55\n"
+   },
+   {
+    "input": "30\n",
+    "output": "832040\n"
+   }
+  ],
+  "sample": {
+   "input": "0\n",
+   "output": "0\n"
+  }
+ },
+ {
+  "id": "anagram",
+  "title": "Anagram Check",
+  "level": "Easy",
+  "desc": "Check whether two words are anagrams (same letters, ignoring case).",
+  "inputFormat": "Two words separated by a space",
+  "outputFormat": "YES or NO",
+  "tests": [
+   {
+    "input": "listen silent\n",
+    "output": "YES\n"
+   },
+   {
+    "input": "abc abd\n",
+    "output": "NO\n"
+   },
+   {
+    "input": "Race care\n",
+    "output": "YES\n"
+   }
+  ],
+  "sample": {
+   "input": "listen silent\n",
+   "output": "YES\n"
+  }
+ },
+ {
+  "id": "dedupe",
+  "title": "Remove Duplicates",
+  "level": "Easy",
+  "desc": "Print the array without duplicates, keeping the order of first occurrence.",
+  "inputFormat": "Line 1: n\nLine 2: n integers",
+  "outputFormat": "Space-separated unique numbers",
+  "tests": [
+   {
+    "input": "5\n1 2 2 3 1\n",
+    "output": "1 2 3\n"
+   },
+   {
+    "input": "4\n5 5 5 5\n",
+    "output": "5\n"
+   },
+   {
+    "input": "4\n4 3 2 1\n",
+    "output": "4 3 2 1\n"
+   }
+  ],
+  "sample": {
+   "input": "5\n1 2 2 3 1\n",
+   "output": "1 2 3\n"
+  }
+ },
+ {
+  "id": "prime",
+  "title": "Prime Number Check",
+  "level": "Easy",
+  "desc": "Check whether the given number is prime.",
+  "inputFormat": "One integer n (1 to 1000000)",
+  "outputFormat": "YES if prime, otherwise NO",
+  "tests": [
+   {
+    "input": "7\n",
+    "output": "YES\n"
+   },
+   {
+    "input": "1\n",
+    "output": "NO\n"
+   },
+   {
+    "input": "91\n",
+    "output": "NO\n"
+   }
+  ],
+  "sample": {
+   "input": "7\n",
+   "output": "YES\n"
+  }
+ },
+ {
+  "id": "digitsum",
+  "title": "Sum of Digits",
+  "level": "Easy",
+  "desc": "Print the sum of the digits of a number.",
+  "inputFormat": "One non-negative integer n",
+  "outputFormat": "Sum of its digits",
+  "tests": [
+   {
+    "input": "1234\n",
+    "output": "10\n"
+   },
+   {
+    "input": "9\n",
+    "output": "9\n"
+   },
+   {
+    "input": "90817\n",
+    "output": "25\n"
+   }
+  ],
+  "sample": {
+   "input": "1234\n",
+   "output": "10\n"
+  }
+ },
+ {
+  "id": "armstrong",
+  "title": "Armstrong Number",
+  "level": "Easy",
+  "desc": "A number is an Armstrong number if the sum of its digits each raised to the power of the number of digits equals the number itself (153 = 1^3 + 5^3 + 3^3). Check the given number.",
+  "inputFormat": "One positive integer n",
+  "outputFormat": "YES or NO",
+  "tests": [
+   {
+    "input": "153\n",
+    "output": "YES\n"
+   },
+   {
+    "input": "123\n",
+    "output": "NO\n"
+   },
+   {
+    "input": "9474\n",
+    "output": "YES\n"
+   }
+  ],
+  "sample": {
+   "input": "153\n",
+   "output": "YES\n"
+  }
+ },
+ {
+  "id": "gcd",
+  "title": "GCD of Two Numbers",
+  "level": "Easy",
+  "desc": "Print the greatest common divisor (HCF) of two numbers.",
+  "inputFormat": "Two positive integers a b",
+  "outputFormat": "The GCD",
+  "tests": [
+   {
+    "input": "12 18\n",
+    "output": "6\n"
+   },
+   {
+    "input": "17 5\n",
+    "output": "1\n"
+   },
+   {
+    "input": "100 75\n",
+    "output": "25\n"
+   }
+  ],
+  "sample": {
+   "input": "12 18\n",
+   "output": "6\n"
+  }
+ },
+ {
+  "id": "lcm",
+  "title": "LCM of Two Numbers",
+  "level": "Easy",
+  "desc": "Print the least common multiple of two numbers.",
+  "inputFormat": "Two positive integers a b (result fits in 64 bits)",
+  "outputFormat": "The LCM",
+  "tests": [
+   {
+    "input": "4 6\n",
+    "output": "12\n"
+   },
+   {
+    "input": "7 3\n",
+    "output": "21\n"
+   },
+   {
+    "input": "21 6\n",
+    "output": "42\n"
+   }
+  ],
+  "sample": {
+   "input": "4 6\n",
+   "output": "12\n"
+  }
+ },
+ {
+  "id": "secondlargest",
+  "title": "Second Largest Element",
+  "level": "Easy",
+  "desc": "Print the second largest distinct element of the array. If there is no second largest, print -1.",
+  "inputFormat": "Line 1: n\nLine 2: n integers",
+  "outputFormat": "The second largest distinct value, or -1",
+  "tests": [
+   {
+    "input": "6\n12 35 1 10 34 1\n",
+    "output": "34\n"
+   },
+   {
+    "input": "3\n10 10 10\n",
+    "output": "-1\n"
+   },
+   {
+    "input": "5\n5 -2 9 9 3\n",
+    "output": "5\n"
+   }
+  ],
+  "sample": {
+   "input": "6\n12 35 1 10 34 1\n",
+   "output": "34\n"
+  }
+ },
+ {
+  "id": "sortarray",
+  "title": "Sort an Array",
+  "level": "Easy",
+  "desc": "Sort the array in ascending order without using a built-in sort (write your own bubble, selection or insertion sort).",
+  "inputFormat": "Line 1: n\nLine 2: n integers",
+  "outputFormat": "Sorted numbers separated by spaces",
+  "tests": [
+   {
+    "input": "5\n5 2 9 1 7\n",
+    "output": "1 2 5 7 9\n"
+   },
+   {
+    "input": "3\n3 3 1\n",
+    "output": "1 3 3\n"
+   },
+   {
+    "input": "4\n-4 0 -10 8\n",
+    "output": "-10 -4 0 8\n"
+   }
+  ],
+  "sample": {
+   "input": "5\n5 2 9 1 7\n",
+   "output": "1 2 5 7 9\n"
+  }
+ },
+ {
+  "id": "binarysearch",
+  "title": "Binary Search",
+  "level": "Medium",
+  "desc": "The array is sorted in ascending order with distinct values. Print the 0-based index of the target using binary search, or -1 if it is not present.",
+  "inputFormat": "Line 1: n\nLine 2: n sorted integers\nLine 3: target",
+  "outputFormat": "The index or -1",
+  "tests": [
+   {
+    "input": "6\n1 3 5 7 9 11\n7\n",
+    "output": "3\n"
+   },
+   {
+    "input": "4\n2 4 6 8\n5\n",
+    "output": "-1\n"
+   },
+   {
+    "input": "3\n10 20 30\n10\n",
+    "output": "0\n"
+   }
+  ],
+  "sample": {
+   "input": "6\n1 3 5 7 9 11\n7\n",
+   "output": "3\n"
+  }
+ },
+ {
+  "id": "firstunique",
+  "title": "First Non-Repeating Character",
+  "level": "Medium",
+  "desc": "Print the first character that appears only once in the word. If every character repeats, print -1.",
+  "inputFormat": "One word (lowercase letters)",
+  "outputFormat": "The character or -1",
+  "tests": [
+   {
+    "input": "swiss\n",
+    "output": "w\n"
+   },
+   {
+    "input": "aabb\n",
+    "output": "-1\n"
+   },
+   {
+    "input": "programming\n",
+    "output": "p\n"
+   }
+  ],
+  "sample": {
+   "input": "swiss\n",
+   "output": "w\n"
+  }
+ },
+ {
+  "id": "transpose",
+  "title": "Matrix Transpose",
+  "level": "Medium",
+  "desc": "Print the transpose of the matrix.",
+  "inputFormat": "Line 1: r c (rows and columns)\nNext r lines: c integers each",
+  "outputFormat": "The transposed matrix, c lines with r integers each",
+  "tests": [
+   {
+    "input": "2 3\n1 2 3\n4 5 6\n",
+    "output": "1 4\n2 5\n3 6\n"
+   },
+   {
+    "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+    "output": "1 4 7\n2 5 8\n3 6 9\n"
+   },
+   {
+    "input": "1 4\n7 8 9 10\n",
+    "output": "7\n8\n9\n10\n"
+   }
+  ],
+  "sample": {
+   "input": "2 3\n1 2 3\n4 5 6\n",
+   "output": "1 4\n2 5\n3 6\n"
+  }
+ },
+ {
+  "id": "pyramid",
+  "title": "Star Pyramid Pattern",
+  "level": "Easy",
+  "desc": "Print a centered star pyramid with n rows. Row i has n-i leading spaces followed by 2i-1 stars (no trailing spaces).",
+  "inputFormat": "One integer n",
+  "outputFormat": "The pyramid pattern",
+  "tests": [
+   {
+    "input": "3\n",
+    "output": "  *\n ***\n*****\n"
+   },
+   {
+    "input": "1\n",
+    "output": "*\n"
+   },
+   {
+    "input": "5\n",
+    "output": "    *\n   ***\n  *****\n *******\n*********\n"
+   }
+  ],
+  "sample": {
+   "input": "3\n",
+   "output": "  *\n ***\n*****\n"
+  }
+ },
+ {
+  "id": "floyd",
+  "title": "Floyd's Triangle",
+  "level": "Easy",
+  "desc": "Print Floyd's triangle with n rows: consecutive numbers starting from 1, with i numbers in row i.",
+  "inputFormat": "One integer n",
+  "outputFormat": "The triangle, numbers separated by spaces",
+  "tests": [
+   {
+    "input": "3\n",
+    "output": "1\n2 3\n4 5 6\n"
+   },
+   {
+    "input": "4\n",
+    "output": "1\n2 3\n4 5 6\n7 8 9 10\n"
+   },
+   {
+    "input": "1\n",
+    "output": "1\n"
+   }
+  ],
+  "sample": {
+   "input": "3\n",
+   "output": "1\n2 3\n4 5 6\n"
+  }
+ },
+ {
+  "id": "pascal",
+  "title": "Pascal's Triangle",
+  "level": "Medium",
+  "desc": "Print the first n rows of Pascal's triangle.",
+  "inputFormat": "One integer n",
+  "outputFormat": "n rows, numbers separated by spaces",
+  "tests": [
+   {
+    "input": "1\n",
+    "output": "1\n"
+   },
+   {
+    "input": "4\n",
+    "output": "1\n1 1\n1 2 1\n1 3 3 1\n"
+   },
+   {
+    "input": "6\n",
+    "output": "1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1\n1 5 10 10 5 1\n"
+   }
+  ],
+  "sample": {
+   "input": "1\n",
+   "output": "1\n"
+  }
+ },
+ {
+  "id": "rotate",
+  "title": "Rotate Array Left",
+  "level": "Medium",
+  "desc": "Rotate the array to the left by k positions and print the result.",
+  "inputFormat": "Line 1: n\nLine 2: n integers\nLine 3: k",
+  "outputFormat": "The rotated array",
+  "tests": [
+   {
+    "input": "5\n1 2 3 4 5\n2\n",
+    "output": "3 4 5 1 2\n"
+   },
+   {
+    "input": "3\n10 20 30\n3\n",
+    "output": "10 20 30\n"
+   },
+   {
+    "input": "4\n1 2 3 4\n5\n",
+    "output": "2 3 4 1\n"
+   }
+  ],
+  "sample": {
+   "input": "5\n1 2 3 4 5\n2\n",
+   "output": "3 4 5 1 2\n"
+  }
+ },
+ {
+  "id": "missing",
+  "title": "Missing Number",
+  "level": "Medium",
+  "desc": "The array contains n distinct numbers taken from 1 to n+1. Print the missing number.",
+  "inputFormat": "Line 1: n\nLine 2: n integers",
+  "outputFormat": "The missing number",
+  "tests": [
+   {
+    "input": "4\n1 2 4 5\n",
+    "output": "3\n"
+   },
+   {
+    "input": "4\n2 3 1 5\n",
+    "output": "4\n"
+   },
+   {
+    "input": "1\n2\n",
+    "output": "1\n"
+   }
+  ],
+  "sample": {
+   "input": "4\n1 2 4 5\n",
+   "output": "3\n"
+  }
+ },
+ {
+  "id": "kadane",
+  "title": "Maximum Subarray Sum",
+  "level": "Medium",
+  "desc": "Find the largest sum of a contiguous subarray (it must contain at least one element).",
+  "inputFormat": "Line 1: n\nLine 2: n integers (may be negative)",
+  "outputFormat": "The maximum subarray sum",
+  "tests": [
+   {
+    "input": "9\n-2 1 -3 4 -1 2 1 -5 4\n",
+    "output": "6\n"
+   },
+   {
+    "input": "3\n-3 -1 -2\n",
+    "output": "-1\n"
+   },
+   {
+    "input": "5\n5 4 -1 7 8\n",
+    "output": "23\n"
+   }
+  ],
+  "sample": {
+   "input": "9\n-2 1 -3 4 -1 2 1 -5 4\n",
+   "output": "6\n"
+  }
+ },
+ {
+  "id": "spiral",
+  "title": "Spiral Matrix Traversal",
+  "level": "Medium",
+  "desc": "Print the elements of the matrix in spiral order (clockwise, starting at the top-left).",
+  "inputFormat": "Line 1: r c\nNext r lines: c integers each",
+  "outputFormat": "All elements on one line, separated by spaces",
+  "tests": [
+   {
+    "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+    "output": "1 2 3 6 9 8 7 4 5\n"
+   },
+   {
+    "input": "2 3\n1 2 3\n4 5 6\n",
+    "output": "1 2 3 6 5 4\n"
+   },
+   {
+    "input": "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n",
+    "output": "1 2 3 4 8 12 11 10 9 5 6 7\n"
+   }
+  ],
+  "sample": {
+   "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+   "output": "1 2 3 6 9 8 7 4 5\n"
+  }
+ },
+ {
+  "id": "dec2bin",
+  "title": "Decimal to Binary",
+  "level": "Easy",
+  "desc": "Convert a non-negative decimal number to binary (without using built-in conversion).",
+  "inputFormat": "One non-negative integer n",
+  "outputFormat": "The binary representation",
+  "tests": [
+   {
+    "input": "10\n",
+    "output": "1010\n"
+   },
+   {
+    "input": "0\n",
+    "output": "0\n"
+   },
+   {
+    "input": "255\n",
+    "output": "11111111\n"
+   }
+  ],
+  "sample": {
+   "input": "10\n",
+   "output": "1010\n"
+  }
+ },
+ {
+  "id": "leapyear",
+  "title": "Leap Year",
+  "level": "Easy",
+  "desc": "Check whether the given year is a leap year. A year divisible by 4 is a leap year, except years divisible by 100 unless they are also divisible by 400.",
+  "inputFormat": "One integer year",
+  "outputFormat": "YES or NO",
+  "tests": [
+   {
+    "input": "2024\n",
+    "output": "YES\n"
+   },
+   {
+    "input": "1900\n",
+    "output": "NO\n"
+   },
+   {
+    "input": "2000\n",
+    "output": "YES\n"
+   }
+  ],
+  "sample": {
+   "input": "2024\n",
+   "output": "YES\n"
+  }
+ },
+ {
+  "id": "compress",
+  "title": "String Compression",
+  "level": "Medium",
+  "desc": "Compress the word by replacing each run of the same character with the character followed by the run length (aaabb becomes a3b2).",
+  "inputFormat": "One word (lowercase letters)",
+  "outputFormat": "The compressed string",
+  "tests": [
+   {
+    "input": "aaabb\n",
+    "output": "a3b2\n"
+   },
+   {
+    "input": "abc\n",
+    "output": "a1b1c1\n"
+   },
+   {
+    "input": "zzzzzzzzzzzy\n",
+    "output": "z11y1\n"
+   }
+  ],
+  "sample": {
+   "input": "aaabb\n",
+   "output": "a3b2\n"
+  }
+ },
+ {
+  "id": "parentheses",
+  "title": "Balanced Parentheses",
+  "level": "Medium",
+  "desc": "Check whether the brackets in the string are balanced. The string contains only ( ) [ ] { } characters.",
+  "inputFormat": "One string of brackets (no spaces)",
+  "outputFormat": "YES if balanced, otherwise NO",
+  "tests": [
+   {
+    "input": "{[()]}\n",
+    "output": "YES\n"
+   },
+   {
+    "input": "([)]\n",
+    "output": "NO\n"
+   },
+   {
+    "input": "((\n",
+    "output": "NO\n"
+   }
+  ],
+  "sample": {
+   "input": "{[()]}\n",
+   "output": "YES\n"
+  }
+ },
+ {
+  "id": "lcp",
+  "title": "Longest Common Prefix",
+  "level": "Medium",
+  "desc": "Print the longest common prefix of the given words. If there is none, print -1.",
+  "inputFormat": "Line 1: n\nLine 2: n words separated by spaces",
+  "outputFormat": "The prefix or -1",
+  "tests": [
+   {
+    "input": "3\nflower flow flight\n",
+    "output": "fl\n"
+   },
+   {
+    "input": "3\ndog racecar car\n",
+    "output": "-1\n"
+   },
+   {
+    "input": "2\ninterview internet\n",
+    "output": "inter\n"
+   }
+  ],
+  "sample": {
+   "input": "3\nflower flow flight\n",
+   "output": "fl\n"
+  }
+ },
+ {
+  "id": "countprimes",
+  "title": "Count Primes up to N",
+  "level": "Medium",
+  "desc": "Print how many prime numbers are there from 1 to n (inclusive).",
+  "inputFormat": "One integer n (1 to 100000)",
+  "outputFormat": "The count of primes",
+  "tests": [
+   {
+    "input": "10\n",
+    "output": "4\n"
+   },
+   {
+    "input": "1\n",
+    "output": "0\n"
+   },
+   {
+    "input": "100\n",
+    "output": "25\n"
+   }
+  ],
+  "sample": {
+   "input": "10\n",
+   "output": "4\n"
+  }
+ },
+ {
+  "id": "perfect",
+  "title": "Perfect Number",
+  "level": "Easy",
+  "desc": "A perfect number equals the sum of its proper divisors (6 = 1 + 2 + 3). Check the given number.",
+  "inputFormat": "One positive integer n",
+  "outputFormat": "YES or NO",
+  "tests": [
+   {
+    "input": "6\n",
+    "output": "YES\n"
+   },
+   {
+    "input": "12\n",
+    "output": "NO\n"
+   },
+   {
+    "input": "28\n",
+    "output": "YES\n"
+   }
+  ],
+  "sample": {
+   "input": "6\n",
+   "output": "YES\n"
+  }
+ },
+ {
+  "id": "majority",
+  "title": "Majority Element",
+  "level": "Medium",
+  "desc": "Print the element that appears more than n/2 times. If there is no such element, print -1.",
+  "inputFormat": "Line 1: n\nLine 2: n integers",
+  "outputFormat": "The majority element or -1",
+  "tests": [
+   {
+    "input": "7\n3 3 4 2 3 3 1\n",
+    "output": "3\n"
+   },
+   {
+    "input": "4\n1 2 3 4\n",
+    "output": "-1\n"
+   },
+   {
+    "input": "5\n2 2 1 1 2\n",
+    "output": "2\n"
+   }
+  ],
+  "sample": {
+   "input": "7\n3 3 4 2 3 3 1\n",
+   "output": "3\n"
+  }
+ }
+]

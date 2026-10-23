@@ -172,23 +172,23 @@ module.exports = {
       E('Tell me about something new you taught yourself.', ['learn', 'self', 'resource', 'practice', 'project', 'result'], 'Describe what you learned, how you taught yourself and what you built with it.')
     ]
   },
-  zoho: {
+  hcl: {
     tech: [
-      E('Write the logic to print a number pattern such as a pyramid. How do you decide the loops?', ['loop', 'nested', 'row', 'column', 'space', 'print'], 'Use an outer loop for rows and inner loops for spaces and numbers, deriving the counts from the row number.'),
+      E('Explain the difference between a primary key and a foreign key with an example.', ['primary', 'foreign', 'unique', 'table', 'reference', 'relationship'], 'A primary key uniquely identifies each row. A foreign key in another table refers to that primary key to link the tables, for example OrderID in a Customers-Orders design.'),
+      E('What are the four pillars of OOPs? Explain any two with examples.', ['encapsulation', 'inheritance', 'polymorphism', 'abstraction', 'class', 'object'], 'Encapsulation, inheritance, polymorphism and abstraction. For example, a Car class inherits from Vehicle (inheritance), and a method overloaded with different parameters shows polymorphism.'),
       E('How do you check whether two strings are anagrams?', ['sort', 'count', 'frequency', 'length', 'character', 'o(n)'], 'Check that lengths match, then compare sorted strings or character frequency counts. Frequency counting is O(n).'),
-      E('Explain recursion with a factorial or Fibonacci program and its drawbacks.', ['base case', 'recursion', 'stack', 'call', 'memory', 'iterat'], 'A function calls itself with a base case. Drawbacks are stack usage and repeated work, which memoization or iteration fixes.'),
-      E('How would you implement a stack using an array? What are overflow and underflow?', ['array', 'top', 'push', 'pop', 'overflow', 'underflow'], 'Keep an array and a top index. Push increments top, pop decrements it. Overflow is pushing to a full stack, underflow is popping from an empty one.'),
-      E('Design the classes for a library management system.', ['class', 'book', 'member', 'object', 'method', 'inheritance'], 'Classes Book, Member and Library, with methods issue and return. Use inheritance for member types and encapsulate data.'),
+      E('Explain recursion with a factorial program and its drawbacks.', ['base case', 'recursion', 'stack', 'call', 'memory', 'iterat'], 'A function calls itself with a base case. Drawbacks are stack usage and repeated work, which iteration or memoization fixes.'),
       E('What is the difference between DELETE, TRUNCATE and DROP in SQL?', ['delete', 'truncate', 'drop', 'rollback', 'table', 'rows'], 'DELETE removes rows with a condition and can be rolled back. TRUNCATE removes all rows quickly. DROP removes the table itself.'),
-      E('Explain how you would debug a program that gives wrong output only for some inputs.', ['test', 'input', 'edge', 'debug', 'trace', 'case'], 'Reproduce with failing inputs, test edge cases, trace variable values step by step, find the faulty condition and fix it.')
+      E('What is the difference between a process and a thread?', ['process', 'thread', 'memory', 'share', 'lightweight', 'context'], 'A process has its own memory space; threads inside a process share memory and are lightweight, so context switching between threads is cheaper.'),
+      E('Explain your final-year project and your own contribution.', ['project', 'technology', 'role', 'problem', 'result', 'database'], 'Explain the problem, the technologies used, your specific role and the result or learning.')
     ],
     hr: [
-      E('Zoho values long-term commitment. Are you ready to stay and grow with us?', ['long term', 'commit', 'grow', 'learn', 'company', 'career'], 'Answer honestly. If yes, explain you want to build skills and a career through real product work.'),
-      E('Why Zoho, and not a large service company?', ['product', 'build', 'learn', 'technology', 'ownership', 'growth'], 'Say you want to build products, learn deeply and own your work.'),
-      E('Tell me about something you built or learned on your own, outside college.', ['project', 'self', 'learn', 'build', 'result', 'practice'], 'Describe a personal project or skill, how you learned it and the result.'),
-      E('Are you comfortable with a smaller-town work location and a simple work culture?', ['location', 'ready', 'flexible', 'adapt', 'culture', 'focus'], 'Answer honestly. If comfortable, say you value focus on work and learning over the location.'),
       E('Tell me about yourself.', ['college', 'project', 'skill', 'goal', 'internship', 'learn'], 'Short summary of education, skills, a project and your goal.'),
-      E('How do you handle a problem you cannot solve at first?', ['break', 'research', 'try', 'ask', 'persist', 'solution'], 'Break it down, research, try different approaches, ask for help when needed, and keep trying.')
+      E('Why do you want to join HCL?', ['technology', 'learn', 'growth', 'global', 'projects', 'career'], 'Mention the chance to work on global projects, learn new technologies and grow your career.'),
+      E('Are you willing to relocate and work in shifts if required?', ['relocate', 'flexible', 'ready', 'shift', 'adapt', 'willing'], 'Answer honestly. If willing, say you are flexible and see it as a chance to learn and grow.'),
+      E('What are your strengths and weaknesses?', ['strength', 'weakness', 'improve', 'example', 'learn', 'work'], 'Give a real strength with an example, and a genuine weakness with the steps you are taking to improve it.'),
+      E('Where do you see yourself in five years?', ['grow', 'skill', 'role', 'learn', 'lead', 'company'], 'Say you want to build strong technical skills, take more responsibility and grow with the company.'),
+      E('How do you handle pressure or a tight deadline?', ['plan', 'priorit', 'focus', 'team', 'communicate', 'time'], 'Break the work into tasks, prioritise, stay focused, communicate early with the team and manage time.')
     ]
   }
 };

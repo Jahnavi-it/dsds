@@ -44,7 +44,7 @@ const EXTRA_FOCUS = {
   accenture: ['html', 'css', 'javascript', 'nodejs', 'webfund'],
   infosys: ['javascript', 'react', 'webfund'],
   wipro: ['html', 'css', 'javascript', 'webfund'],
-  zoho: ['javascript', 'nodejs', 'webfund'],
+  hcl: ['html', 'css', 'javascript', 'webfund'],
   microsoft: ['javascript', 'webfund'],
   amazon: ['webfund'],
   tcs: ['webfund']
