@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { api } from '../api.js';
+import { api, downloadFile } from '../api.js';
 
 const EMPTY = {
   name: '', email: '', phone: '', college: '', branch: '', year: '', cgpa: '',
@@ -48,6 +48,19 @@ export default function Resume() {
     setBusy(false);
   };
 
+  const download = async () => {
+    setError('');
+    setMsg('');
+    setBusy(true);
+    try {
+      await api('/resume', { method: 'POST', body: { data: { ...f, education: [f.college, f.branch].filter(Boolean) } } });
+      await downloadFile('/resume/pdf', 'Resume.pdf');
+    } catch (e) {
+      setError(e.message);
+    }
+    setBusy(false);
+  };
+
   const skills = String(f.skills || '').split(',').map((x) => x.trim()).filter(Boolean);
   const box = { width: '100%', boxSizing: 'border-box', padding: 10, border: '1px solid #c9cfe3', borderRadius: 8, fontSize: 15 };
 
@@ -68,8 +81,8 @@ export default function Resume() {
         {error && <p className="error">{error}</p>}
         {msg && <p className="muted">{msg}</p>}
         <button className="primary wide" onClick={save} disabled={busy}>{t('save', { defaultValue: 'Save' })}</button>
-        <button className="secondary wide" style={{ padding: 11, border: 'none', borderRadius: 8, fontSize: 16, cursor: 'pointer' }} onClick={() => window.print()}>
-          {t('printPdf', { defaultValue: 'Print / Save as PDF' })}
+        <button className="secondary wide" style={{ padding: 11, border: 'none', borderRadius: 8, fontSize: 16, cursor: 'pointer' }} onClick={download} disabled={busy}>
+          {t('downloadPdf', { defaultValue: 'Download resume (PDF)' })}
         </button>
       </div>
 

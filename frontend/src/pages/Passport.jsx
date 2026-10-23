@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { api } from '../api.js';
+import { api, downloadFile } from '../api.js';
 
 const LABELS = { assessment: 'Assessment', mock: 'Mock test', tech: 'Technical interview', hr: 'HR interview', coding: 'Coding', activity: 'Activity', resume: 'Resume' };
 
@@ -17,6 +17,12 @@ export default function Passport() {
   const claim = async (type) => {
     setError('');
     try { await api('/certificates/claim', { method: 'POST', body: { type } }); load(); }
+    catch (e) { setError(e.message); }
+  };
+
+  const download = async (code) => {
+    setError('');
+    try { await downloadFile('/certificates/' + encodeURIComponent(code) + '/pdf', 'NEXORA-Certificate-' + code + '.pdf'); }
     catch (e) { setError(e.message); }
   };
 
@@ -45,7 +51,12 @@ export default function Passport() {
             </div>
             <p className="small muted">{c.need}</p>
             {c.code
-              ? <Link to={'/verify/' + c.code} className="small">{t('verifyLink', { defaultValue: 'Open verification page' })}</Link>
+              ? (
+                <div className="stack">
+                  <button className="primary" onClick={() => download(c.code)}>{t('downloadCert', { defaultValue: 'Download certificate (PDF)' })}</button>
+                  <Link to={'/verify/' + c.code} className="small">{t('verifyLink', { defaultValue: 'Open verification page' })}</Link>
+                </div>
+              )
               : <button className="primary" disabled={!c.eligible} onClick={() => claim(c.type)}>{t('claim', { defaultValue: 'Claim certificate' })}</button>}
           </div>
         ))}
