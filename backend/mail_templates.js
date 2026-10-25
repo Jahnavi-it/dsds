@@ -38,19 +38,6 @@ function welcome(user) {
   };
 }
 
-function resetLink(user, link) {
-  const paragraphs = [
-    'Hi ' + esc(first(user)) + ', we received a request to reset your NEXORA password.',
-    'Use the button below to choose a new password. The link works once and expires in 30 minutes.',
-    'If you did not ask for this, ignore this email. Your password stays the same.'
-  ];
-  return {
-    subject: 'Reset your NEXORA password',
-    html: layout({ heading: 'Reset your password', paragraphs, button: { label: 'Choose a new password', url: link }, extra: '<p style="font-size:12px;color:#6a7899;word-break:break-all">Button not working? Copy this link into your browser:<br>' + esc(link) + '</p>' }),
-    text: 'Hi ' + first(user) + ',\n\nWe received a request to reset your NEXORA password. Open this link within 30 minutes to choose a new one:\n' + link + '\n\nIf you did not ask for this, ignore this email.\n'
-  };
-}
-
 function passwordChanged(user) {
   const when = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) + ' IST';
   const url = site() + '/forgot-password';
@@ -84,4 +71,4 @@ function certificate(user, cert) {
   };
 }
 
-module.exports = { welcome, resetLink, passwordChanged, certificate };
+module.exports = { welcome, passwordChanged, certificate };
