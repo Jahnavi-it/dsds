@@ -1,5 +1,6 @@
-import { Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
@@ -36,6 +37,7 @@ const langs = [
 export default function App() {
   const { t, i18n } = useTranslation();
   const nav = useNavigate();
+  const loc = useLocation();
   const token = localStorage.getItem('token');
 
   const setLang = (code) => {
@@ -50,10 +52,13 @@ export default function App() {
     nav('/login');
   };
 
+  // First page for visitors who are not logged in: the NEXORA home page, full width, no app header
+  if (loc.pathname === '/' && !token) return <Landing />;
+
   return (
     <div>
       <header className="topbar">
-        <strong className="brand">{t('appName')}</strong>
+        <strong className="brand"><Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>{t('appName')}</Link></strong>
         <div className="actions">
           {langs.map((l) => (
             <button

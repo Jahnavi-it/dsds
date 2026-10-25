@@ -56,6 +56,7 @@ function start() {
     res.json({ user });
   });
 
+  require('./public_stats')(app, db);
   require('./assessment')(app, db, auth);
   require('./learning')(app, db, auth);
   require('./companies')(app, db, auth);
