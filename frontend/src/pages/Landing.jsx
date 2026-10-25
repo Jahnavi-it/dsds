@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
+import Logo from '../Logo.jsx';
 import '../landing.css';
 
 // Put your own contact email here to show it in the Contact section (leave empty to hide it).
@@ -27,20 +28,6 @@ function Icon({ name, size = 22 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d={ICONS[name]} />
-    </svg>
-  );
-}
-
-function Logo({ size = 40 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
-      <defs>
-        <linearGradient id="lpLogo" x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0" stopColor="#2563eb" />
-          <stop offset="1" stopColor="#a855f7" />
-        </linearGradient>
-      </defs>
-      <path d="M5 43 5 5 17 5 33 28 33 5 44 5 44 43 32 43 16 20 16 43Z" fill="url(#lpLogo)" />
     </svg>
   );
 }
@@ -82,7 +69,6 @@ function CountUp({ value, suffix = '' }) {
 }
 
 function HeroArt({ stats }) {
-  const [photo, setPhoto] = useState(true);
   return (
     <div className="lp-art" aria-hidden="true">
       <svg className="lp-towers" viewBox="0 0 640 560" preserveAspectRatio="xMidYMax slice">
@@ -103,7 +89,6 @@ function HeroArt({ stats }) {
         <rect x="330" y="400" width="160" height="160" rx="4" fill="#1e40af" opacity=".7" />
         <rect x="330" y="400" width="160" height="160" fill="url(#win)" opacity=".8" />
       </svg>
-      {photo && <img className="lp-photo" src="/hero-student.png" alt="" onError={() => setPhoto(false)} />}
       <div className="lp-script">
         <span>Dream</span><span>Prepare</span><span>Achieve</span>
       </div>
@@ -136,6 +121,7 @@ export default function Landing() {
   const [stats, setStats] = useState(() => {
     try { return JSON.parse(localStorage.getItem('lpStats')) || null; } catch (e) { return null; }
   });
+  const [photo, setPhoto] = useState(true);
   const [active, setActive] = useState('home');
   const [scrolled, setScrolled] = useState(false);
   useReveal();
@@ -188,7 +174,12 @@ export default function Landing() {
         </div>
       </nav>
 
-      <header className="lp-hero" id="home">
+      <header className={'lp-hero' + (photo ? ' has-photo' : '')} id="home">
+        {photo && (
+          <div className="lp-photo">
+            <img src="/hero-student.jpg" alt="Student with a laptop looking ahead" onError={() => setPhoto(false)} />
+          </div>
+        )}
         <div className="lp-hero-in">
           <div className="lp-copy">
             <div className="lp-eyebrow">Placement preparation platform</div>

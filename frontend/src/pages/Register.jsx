@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
+import Logo from '../Logo.jsx';
 
 export default function Register() {
   const { t, i18n } = useTranslation();
@@ -29,7 +30,7 @@ export default function Register() {
 
   return (
     <div className="card">
-      <div className="brand"><h1>{t('appName')}</h1><p className="tagline">{t('tagline', { defaultValue: 'Your Journey. Your Skills. Your Placement.' })}</p></div><h2>{t('register')}</h2>
+      <div className="brand"><div className="brandlogo"><Logo size={56} /></div><h1>{t('appName')}</h1><p className="tagline">{t('tagline', { defaultValue: 'Your Journey. Your Skills. Your Placement.' })}</p></div><h2>{t('register')}</h2>
       <form onSubmit={submit}>
         <input placeholder={t('name')} value={f.name} onChange={set('name')} required />
         <input placeholder={t('email')} type="email" value={f.email} onChange={set('email')} required />

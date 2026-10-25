@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
+import Logo from '../Logo.jsx';
 
 export default function Login() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ export default function Login() {
 
   return (
     <div className="card">
-      <div className="brand"><h1>{t('appName')}</h1><p className="tagline">{t('tagline', { defaultValue: 'Your Journey. Your Skills. Your Placement.' })}</p></div><h2>{t('login')}</h2>
+      <div className="brand"><div className="brandlogo"><Logo size={56} /></div><h1>{t('appName')}</h1><p className="tagline">{t('tagline', { defaultValue: 'Your Journey. Your Skills. Your Placement.' })}</p></div><h2>{t('login')}</h2>
       <form onSubmit={submit}>
         <input placeholder={t('email')} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input placeholder={t('password')} type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />

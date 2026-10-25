@@ -22,6 +22,7 @@ import Coding from './pages/Coding.jsx';
 import Notes from './pages/Notes.jsx';
 import Verify from './pages/Verify.jsx';
 import Sidebar from './Sidebar.jsx';
+import Logo from './Logo.jsx';
 import Mistakes from './pages/Mistakes.jsx';
 import Growth from './pages/Growth.jsx';
 import Simulator from './pages/Simulator.jsx';
@@ -58,7 +59,7 @@ export default function App() {
   return (
     <div>
       <header className="topbar">
-        <strong className="brand"><Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>{t('appName')}</Link></strong>
+        <strong className="topbrand"><Link to="/" className="topbrand-link"><Logo size={30} /><span>{t('appName')}</span></Link></strong>
         <div className="actions">
           {langs.map((l) => (
             <button
