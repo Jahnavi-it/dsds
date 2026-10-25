@@ -193,16 +193,13 @@ module.exports = function (app, db, auth) {
     }
   });
 
+  // Company notes: real, previously reported questions for each company (see company_notes.js)
   app.get('/api/notes/:id', auth, (req, res) => {
     const c = (require('./companies').COMPANIES || []).find((x) => x.id === req.params.id);
     if (!c) return res.status(404).json({ error: 'Company not found' });
-    const subjects = require('./content').SUBJECTS;
-    res.json({
-      name: c.name || c.id,
-      focus: c.focus,
-      subjects: c.focus.map((f) => subjects.find((s) => s.id === f)).filter(Boolean).map((s) => ({ id: s.id, topics: s.topics })),
-      questions: (c.questions || []).map((q) => ({ cat: q.cat, question: q.question, options: q.options, answer: q.answer, explanation: q.explanation }))
-    });
+    const n = require('./company_notes')[c.id];
+    if (!n) return res.status(404).json({ error: 'Notes for this company are not ready yet' });
+    res.json({ id: c.id, name: c.name || c.id, type: c.type, ...n });
   });
 };
 
