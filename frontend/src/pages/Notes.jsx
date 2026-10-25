@@ -46,7 +46,7 @@ export default function Notes() {
         <p>{n.summary}</p>
         <p className="muted small">{total} {t('reportedQs', { defaultValue: 'questions reported by candidates' })} | {n.rounds.length} {t('roundsLabel', { defaultValue: 'rounds' })}</p>
         <p className="muted small">{t('notesDisclaimer', { defaultValue: 'Questions change every year. Use these as practice material, not as a fixed paper.' })}</p>
-        <Link to={'/companies/' + n.id + '/practice'} className="primary wide linkbtn">{t('practiceMcq', { defaultValue: 'Practice MCQs for {{name}}', name: n.name })}</Link>
+        <p className="muted small">{t('practiceElsewhere', { defaultValue: 'Looking for MCQ practice for {{name}}? It is in Company prep.', name: n.name })} <Link to={'/companies/' + n.id}>{t('openCompanyPrep', { defaultValue: 'Open Company prep' })}</Link></p>
       </div>
 
       <div className="card">
