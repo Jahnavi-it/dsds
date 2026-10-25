@@ -7,6 +7,8 @@ function start() {
   const bcrypt = require('bcryptjs');
   const jwt = require('jsonwebtoken');
   const db = require('./db');
+  const mail = require('./mailer');
+  const T = require('./mail_templates');
 
   const app = express();
   app.use(cors({ ...(process.env.FRONTEND_URL ? { origin: process.env.FRONTEND_URL.split(',') } : {}), exposedHeaders: ['Content-Disposition'] }));
@@ -39,6 +41,7 @@ function start() {
       'INSERT INTO users (name, email, password_hash, college, branch, year, language) VALUES (?,?,?,?,?,?,?)'
     ).run(name, email.toLowerCase(), hash, college || null, branch || null, year || null, language || 'en');
     const user = db.prepare('SELECT id, name, email, college, branch, year, language, role FROM users WHERE id = ?').get(r.lastInsertRowid);
+    mail.notify({ to: user.email, name: user.name, ...T.welcome(user) });
     res.status(201).json({ token: sign(user), user });
   });
 
@@ -57,6 +60,7 @@ function start() {
   });
 
   require('./public_stats')(app, db);
+  require('./account')(app, db);
   require('./assessment')(app, db, auth);
   require('./learning')(app, db, auth);
   require('./companies')(app, db, auth);

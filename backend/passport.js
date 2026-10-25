@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const { certificatePdf } = require('./pdf_docs');
+const mail = require('./mailer');
+const T = require('./mail_templates');
 
 const CERTS = {
   assessment: { title: 'Skill Assessment Completion', need: 'Complete the placement assessment', ok: (x) => x.assessed },
@@ -73,6 +75,9 @@ module.exports = function (app, db, auth) {
       const code = 'DSDS-' + crypto.createHash('sha256').update(uid + type + Date.now() + Math.random()).digest('hex').slice(0, 10).toUpperCase();
       db.prepare('INSERT INTO certificates (user_id, type, code) VALUES (?,?,?)').run(uid, type, code);
       row = { code };
+      // first time this certificate is issued: tell the student by email
+      const who = db.prepare('SELECT name, email FROM users WHERE id = ?').get(uid);
+      if (who && who.email) mail.notify({ to: who.email, name: who.name, ...T.certificate(who, { title: def.title, need: def.need, code }) });
     }
     res.json({ ok: true, code: row.code });
   });

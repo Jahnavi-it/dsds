@@ -31,6 +31,7 @@ export default function Login() {
         <input placeholder={t('email')} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input placeholder={t('password')} type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         {error && <div className="error">{error}</div>}
+        <Link to="/forgot-password" className="small" style={{ alignSelf: 'flex-end', fontSize: 14 }}>{t('forgotLink', { defaultValue: 'Forgot password?' })}</Link>
         <button className="primary" type="submit">{t('login')}</button>
       </form>
       <p>{t('noAccount')} <Link to="/register">{t('register')}</Link></p>
