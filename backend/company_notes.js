@@ -67,7 +67,7 @@ const NOTES = {
     ],
     rounds: [
       R('Online test', 'Sections reported: mathematical ability (10 questions, 35 min), analytical reasoning (about 15 questions, 15 min), verbal ability (20 questions, 20 min), pseudocode (5 questions, 10 min) and puzzle solving (4 questions, 10 min). The SP track also has coding on linked lists, trees, DP basics and graph BFS or DFS (from a prep guide).'),
-      R('Technical interview: CSE and IT', '', [
+      R('Technical interview', '', [
         Q('Why is Java platform independent? What is JIT in Java?', 'Java source compiles to bytecode that any JVM can run. The JIT compiler inside the JVM turns frequently used bytecode into native machine code at runtime for speed.', 1),
         Q('What is a string? What are the types of datatypes?', 'A String is an immutable sequence of characters. Datatypes are primitive (int, char, boolean...) and non-primitive (String, arrays, classes).', 1),
         Q('What is exception handling?', 'Handling runtime errors with try, catch and finally (plus throw and throws) so the program does not crash.', 1),
@@ -83,15 +83,6 @@ const NOTES = {
         Q('Write a program to check if a number is prime.', 'Check divisors from 2 up to sqrt(n); if none divide n (and n > 1) it is prime.', 2),
         Q('Explain the time complexity of binary search.', 'O(log n) on a sorted array, because the search range halves every step.', 2),
         Q('Walk through the phases of the Software Development Life Cycle. What is Agile?', 'Requirements, design, development, testing, deployment, maintenance. Agile builds in short iterations with regular feedback instead of one big plan.', 2)
-      ]),
-      R('Technical interview: ECE and EEE', '', [
-        Q('What is a pointer and what is its use?', 'A variable that stores the address of another variable. Used for dynamic memory, arrays, passing by reference and data structures.', 2),
-        Q('Differentiate between C and Embedded C.', 'Embedded C is C used for microcontrollers, with direct hardware access, limited memory and real-time needs.', 2),
-        Q('Write a program to check if a number is a perfect number.', 'Add all proper divisors (less than n); the number is perfect if the sum equals n, for example 6 = 1 + 2 + 3.', 2),
-        Q('Draw a circuit for a low-pass filter and explain its significance.', 'A resistor in series with a capacitor to ground; it passes low frequencies and blocks high ones. Cut-off frequency is 1/(2*pi*R*C).', 2),
-        Q('What is a Zener diode and what are its applications?', 'A diode designed to conduct in reverse at a fixed breakdown voltage. Used for voltage regulation and reference.', 2),
-        Q('Explain the difference between combinational and sequential circuits.', 'Combinational output depends only on the present input; sequential output also depends on past state (it has memory, such as flip-flops).', 2),
-        Q('Explain the difference between AM and FM modulation.', 'AM varies the carrier amplitude; FM varies its frequency. FM is more noise-resistant but needs more bandwidth.', 2)
       ]),
       R('HR interview', '', [
         Q('Why should we hire you? Explain your academic project and your role in it.', 'Match two of your skills to the job, then give your project in one minute with your own role clearly stated.', 1),
