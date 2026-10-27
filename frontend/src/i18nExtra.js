@@ -31,7 +31,7 @@ i18n.addResourceBundle('te', 'translation', { tagline: 'మీ ప్రయా�
 i18n.addResourceBundle('hi', 'translation', { tagline: 'आपकी यात्रा। आपके कौशल। आपका प्लेसमेंट।' }, true, true);
 i18n.addResourceBundle('en', 'translation', {
   takeAssessment: 'Take Assessment', action_learn: 'Start Learning', action_practice: 'Practice Now',
-  cat_reasoning: 'Reasoning', cat_aptitude: 'Aptitude', cat_verbal: 'Verbal Ability',
+  cat_reasoning: 'Reasoning', cat_aptitude: 'Aptitude', cat_verbal: 'Verbal Ability', cat_pseudocode: 'Pseudocode', cat_office: 'MS Office and applications', cat_cloud: 'Cloud and security', cat_debug: 'Code debugging',
   cat_cn: 'Computer Networks', cat_os: 'Operating Systems', focusTopics: 'Focus Topics'
 }, true, true);
 i18n.addResourceBundle('te', 'translation', {

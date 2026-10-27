@@ -63,6 +63,20 @@ module.exports = function (app, db, auth) {
 
   app.get('/api/mock/start', auth, (req, res) => {
     const company = String(req.query.company || '');
+    const patterns = require('./company_patterns');
+    const built = company ? patterns.buildTest(company) : null;
+    if (built && built.questions.length) {
+      const r = db.prepare('INSERT INTO mock_sessions (user_id, company, questions, minutes) VALUES (?,?,?,?)')
+        .run(req.user.id, company, JSON.stringify(built.questions), built.minutes);
+      return res.json({
+        sessionId: r.lastInsertRowid,
+        minutes: built.minutes,
+        mode: built.mode,
+        title: built.title,
+        sections: built.sections,
+        questions: built.questions.map((q, i) => ({ i, cat: q.cat, sec: q.sec, question: q.question, options: q.options }))
+      });
+    }
     const count = 20;
     const qs = buildQuestions(company, count);
     if (!qs.length) return res.status(500).json({ error: 'No questions available' });
@@ -74,6 +88,14 @@ module.exports = function (app, db, auth) {
       minutes,
       questions: qs.map((q, i) => ({ i, cat: q.cat, question: q.question, options: q.options }))
     });
+  });
+
+  // Real test pattern for a company with its sources (shown before the mock test starts)
+  app.get('/api/mock/pattern', auth, (req, res) => {
+    const id = String(req.query.company || '');
+    const c = getCompanies().find((x) => x.id === id);
+    const p = c ? require('./company_patterns').describe(id) : null;
+    res.json({ pattern: p ? { name: c.name || c.id, ...p } : null });
   });
 
   db.exec('CREATE TABLE IF NOT EXISTS mistakes (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, cat TEXT, question TEXT NOT NULL, options TEXT NOT NULL, answer INTEGER NOT NULL, chosen INTEGER NOT NULL, explanation TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id, question));');
@@ -98,9 +120,21 @@ module.exports = function (app, db, auth) {
       if (!stats[q.cat]) stats[q.cat] = { category: q.cat, correct: 0, total: 0 };
       stats[q.cat].total += 1;
       if (ok) { stats[q.cat].correct += 1; score += 1; }
-      return { cat: q.cat, question: q.question, options: q.options, answer: q.answer, chosen, explanation: q.explanation };
+      return { cat: q.cat, sec: q.sec, question: q.question, options: q.options, answer: q.answer, chosen, explanation: q.explanation };
     });
     const categories = Object.values(stats).map((c) => ({ ...c, percent: Math.round((c.correct / c.total) * 100) }));
+    let sections = null;
+    if (qs.length && qs[0].sec !== undefined) {
+      const names = (require('./company_patterns').PATTERNS[s.company] || {}).sections || [];
+      const by = {};
+      review.forEach((r) => {
+        const k = r.sec;
+        if (!by[k]) by[k] = { index: k, correct: 0, total: 0 };
+        by[k].total += 1;
+        if (r.chosen === r.answer) by[k].correct += 1;
+      });
+      sections = Object.values(by).map((x) => ({ ...x, name: (names[x.index] || {}).name || 'Section ' + (x.index + 1), percent: Math.round((x.correct / x.total) * 100) }));
+    }
     const seconds = Math.max(0, Math.round((Date.now() - Date.parse(s.started_at.replace(' ', 'T') + 'Z')) / 1000));
     const late = seconds > s.minutes * 60 + 60;
     db.prepare('UPDATE mock_sessions SET submitted = 1 WHERE id = ?').run(s.id);
@@ -114,7 +148,7 @@ module.exports = function (app, db, auth) {
           .run(req.user.id, r.cat, r.question, JSON.stringify(r.options), r.answer, r.chosen, r.explanation || '');
       }
     });
-    res.json({ score, total: qs.length, percent: Math.round((score / qs.length) * 100), seconds, late, categories, review });
+    res.json({ score, total: qs.length, percent: Math.round((score / qs.length) * 100), seconds, late, categories, sections, review });
   });
 
   app.post('/api/progress/checkin', auth, (req, res) => {

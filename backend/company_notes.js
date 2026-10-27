@@ -148,7 +148,9 @@ const NOTES = {
     sources: [
       S('GeeksforGeeks: Accenture Interview Experience for ASE (Off-Campus) 2023', 'https://www.geeksforgeeks.org/?p=1049582', 'experience'),
       S('GeeksforGeeks: Accenture Interview Experience for ASE (updated Jan 2024)', 'https://www.geeksforgeeks.org/?p=1125354', 'experience'),
-      S('GeeksforGeeks: Accenture Interview Experience for ASE (Sept 2023)', 'https://www.geeksforgeeks.org/?p=1068016', 'experience')
+      S('GeeksforGeeks: Accenture Interview Experience for ASE (Sept 2023)', 'https://www.geeksforgeeks.org/?p=1068016', 'experience'),
+      S('freshershunt: Accenture interview questions (prep guide, typical questions)', 'https://freshershunt.in/?p=54935', 'guide'),
+      S('Weekday: Accenture interview questions (prep guide, sample)', 'https://www.weekday.works/post/accenture-interview-questions', 'guide')
     ],
     rounds: [
       R('Cognitive and technical assessment', 'Topics reported: verbal and English, quantitative (simplification, quadratic equations, time-speed-distance, permutations and probability), analytical reasoning (syllogisms, puzzles, blood relations), abstract reasoning, pseudocode output, common applications and MS Office (Excel formulas and shortcuts), and MCQs on SQL, networking, cloud and OS.'),
@@ -162,6 +164,14 @@ const NOTES = {
         Q('Explain a project that was part of your curriculum.', 'Cover the problem, your part, the tech used and the result in about two minutes.', 1),
         Q('Tell us something unique that is not in your resume.', 'Share a hobby, a side project or a learning story with a concrete example.', 1),
         Q('Do you have any questions for the interviewer?', 'Ask about the training programme, the team you may join or what the first six months look like.', 1)
+      ]),
+      R('HR interview (typical questions, prep guide)', 'Typical questions listed by prep guides for recent freshers. They are not confirmed accounts from one candidate.', [
+        Q('Why do you want to join Accenture?', 'Mention the training, the range of projects and how it fits your skills. Avoid only talking about salary.', 4),
+        Q('A project deadline is slipping. What would you do?', 'Tell your lead early, break the work into priorities, ask for help and agree a new plan.', 4),
+        Q('Are you comfortable with relocation and rotating shifts?', 'Answer honestly. If you have a limit, say it politely and explain what you can do.', 4)
+      ]),
+      R('Technical interview (typical questions, prep guide)', 'Typical question from a prep guide, not a confirmed single-candidate account.', [
+        Q('What is the difference between compile-time errors and run-time errors?', 'Compile-time errors (syntax, type mismatch) stop the build. Run-time errors (divide by zero, null reference) happen while the program runs.', 5)
       ])
     ]
   },
@@ -269,7 +279,9 @@ const NOTES = {
     sources: [
       S('GeeksforGeeks: Amazon Interview Experience for SDE (online test and 4 coding problems)', 'https://www.geeksforgeeks.org/?p=482934', 'experience'),
       S('Taro: Amazon SDE Intern, Bengaluru (Oct 2025 reports)', 'https://www.jointaro.com/interviews/companies/amazon/work-experiences/sde-intern-bengaluru-april-29-2024-2-73dd30de', 'experience'),
-      S('Amazon: Leadership Principles', 'https://aboutamazon.com/about-us/leadership-principles', 'guide')
+      S('Amazon: Leadership Principles', 'https://aboutamazon.com/about-us/leadership-principles', 'guide'),
+      S('Glassdoor: Amazon interview review (behavioural question)', 'https://www.glassdoor.com.au/Interview/Amazon-Interview-E6036-RVW96713328.htm', 'experience'),
+      S('LeetCode Discuss: Amazon SDE-2 Interview Experience (Leadership Principle topics)', 'https://leetcode.com/discuss/post/8351419/amazon-sde-2-interview-experience-by-ano-b2rm/', 'experience')
     ],
     rounds: [
       R('Online assessment', 'Sections reported: two coding problems, code debugging, logical ability and a work-style assessment. October 2025 reports for Bengaluru intern roles also mention two coding questions.', [
@@ -282,7 +294,13 @@ const NOTES = {
         Q('Partition problem: can the array be split into two subsets with equal sum?', 'If the total is odd the answer is no. Otherwise use subset-sum DP for total/2. O(n * total).', 1),
         Q('Trapping rain water.', 'Two pointers with the left max and right max, moving the lower side inward and adding the trapped water. O(n) time, O(1) space.', 1)
       ]),
-      R('Behavioural: Leadership Principles', 'Amazon publishes 16 principles: Customer Obsession, Ownership, Invent and Simplify, Are Right A Lot, Learn and Be Curious, Hire and Develop the Best, Insist on the Highest Standards, Think Big, Bias for Action, Frugality, Earn Trust, Dive Deep, Have Backbone; Disagree and Commit, Deliver Results, Strive to be Earth\'s Best Employer, and Success and Scale Bring Broad Responsibility. Prepare real stories in the STAR format (Situation, Task, Action, Result) for them.')
+      R('Behavioural: Leadership Principles', 'Amazon publishes 16 principles: Customer Obsession, Ownership, Invent and Simplify, Are Right A Lot, Learn and Be Curious, Hire and Develop the Best, Insist on the Highest Standards, Think Big, Bias for Action, Frugality, Earn Trust, Dive Deep, Have Backbone; Disagree and Commit, Deliver Results, Strive to be Earth\'s Best Employer, and Success and Scale Bring Broad Responsibility. Prepare real stories in the STAR format (Situation, Task, Action, Result) for them.'),
+      R('HR and behavioural interview', 'Amazon behavioural questions follow the Leadership Principles. One candidate was asked about a disagreement with a teammate, and another report lists Customer Obsession, Dive Deep and Invent and Simplify. The wording of the last three follows those reported topics.', [
+        Q('Tell me about a time you disagreed with a teammate.', 'STAR format: the situation, what you did to reach agreement using facts, and the result. Do not blame the teammate.', 4),
+        Q('Tell me about a time you put the customer first (Customer Obsession).', 'Show a real choice where you gave up something easy to give the user a better result.', 5),
+        Q('Tell me about a time you dived deep to find the root cause of a problem (Dive Deep).', 'Describe the data or logs you checked, what you found and how you fixed it for good.', 5),
+        Q('Tell me about a time you invented or simplified something (Invent and Simplify).', 'Explain the old way, what you changed and the measurable improvement.', 5)
+      ])
     ]
   },
 
@@ -297,7 +315,10 @@ const NOTES = {
     sources: [
       S('GeeksforGeeks: Microsoft Interview Experience (On-Campus Internship)', 'https://www.geeksforgeeks.org/?p=486909', 'experience'),
       S('GeeksforGeeks: Microsoft Interview Experience for SDE', 'https://www.geeksforgeeks.org/?p=1005963', 'experience'),
-      S('LeetCode Discuss: Microsoft SDE Intern Round 1 + 2 experience', 'https://leetcode.com/discuss/post/7378779/microsoft-sde-intern-interview-experienc-83ot/', 'experience')
+      S('LeetCode Discuss: Microsoft SDE Intern Round 1 + 2 experience', 'https://leetcode.com/discuss/post/7378779/microsoft-sde-intern-interview-experienc-83ot/', 'experience'),
+      S('GeeksforGeeks: Microsoft Interview Experience for SDE (behavioural questions)', 'https://www.geeksforgeeks.org/?p=1031364', 'experience'),
+      S('LeetCode Discuss: Microsoft SDE1 Bangalore New Grad (Jan 2022)', 'https://leetcode.com/discuss/interview-experience/1713468/microsoft-sde1-bangalore-india-new-grad-jan-2022-result-awaiting/', 'experience'),
+      S('Glassdoor: Microsoft software engineering intern interview review', 'https://www.glassdoor.co.uk/Interview/Microsoft-Interview-E1651-RVW104877142.htm', 'experience')
     ],
     rounds: [
       R('Online assessment', 'A 2020 on-campus test had three coding problems. A recent intern test had two DSA questions: one easy (basic vector iteration) and one medium sliding-window problem.', [
@@ -311,7 +332,16 @@ const NOTES = {
         Q('Search for a value in a matrix sorted row-wise and column-wise.', 'Start from the top-right corner: move left if the value is bigger, down if smaller. O(m + n).', 1),
         Q('Explain how you would generate test cases and handle boundary values for your solution.', 'List empty input, a single element, duplicates, minimum and maximum values and negative numbers.', 3)
       ]),
-      R('Behavioural and design (experienced roles)', 'Reported: how you handled conflicts with team members and how you managed deadlines. The design round asks for a scalable, fault-tolerant solution and discusses data consistency, availability and latency.')
+      R('Behavioural and design (experienced roles)', 'Reported: how you handled conflicts with team members and how you managed deadlines. The design round asks for a scalable, fault-tolerant solution and discusses data consistency, availability and latency.'),
+      R('HR and behavioural interview', 'Candidates report behavioural questions about team conflict, prioritising work, handling challenges, innovation and why you want Microsoft. Use the STAR format (Situation, Task, Action, Result).', [
+        Q('Tell me about a time when you faced a conflict within a team and how you resolved it.', 'Pick a real conflict, say what you did to understand the other view, and end with the result.', 4),
+        Q('How do you prioritise tasks and manage your time effectively?', 'Explain a simple method (deadline and impact) and give one example from a project or exam period.', 4),
+        Q('Tell me about a time when you faced a challenge in your life and how did you overcome it?', 'Choose a genuine challenge, show what you learned and how you acted, not only what happened.', 5),
+        Q('Tell me about a time you innovated something.', 'Describe a project idea or improvement you made, the problem it solved and the outcome.', 5),
+        Q('Tell me about a technology update you have heard of in the last month.', 'Follow tech news before the interview. Explain the update simply and why it matters.', 5),
+        Q('Why Microsoft?', 'Connect a Microsoft product or value (for example learning culture or products you use) to your goals.', 6),
+        Q('Tell me about a failure.', 'Be honest, own your part, and explain what you changed afterwards.', 6)
+      ])
     ]
   },
 
@@ -328,7 +358,13 @@ const NOTES = {
       S('LeetCode Discuss: Google STEP Internship Interview Experience (India, 2025)', 'https://leetcode.com/discuss/post/7478960/google-step-internship-interview-experie-6m2g', 'experience')
     ],
     rounds: [
-      R('HR telephonic screening (2025 report)', 'Topics: a short introduction, LeetCode progress (problems solved and consistency), your preparation strategy, CGPA and backlogs, and projects.'),
+      R('HR telephonic screening (2025 report)', 'Topics: a short introduction, LeetCode progress (problems solved and consistency), your preparation strategy, CGPA and backlogs, and projects. The wording below follows the topics the candidate listed.', [
+        Q('Give a short introduction about yourself.', 'Two minutes: name, college and branch, one project you are proud of and what you are looking for.', 2),
+        Q('How many problems have you solved on LeetCode, and how consistent is your practice?', 'Give honest numbers, how often you practise and one topic you improved at.', 2),
+        Q('What is your preparation strategy for the internship interviews?', 'Explain your weekly plan: DSA topics, mock interviews and how you review mistakes.', 2),
+        Q('What is your CGPA, and do you have any backlogs?', 'Answer directly. If there is a backlog, say when you cleared it or your plan to clear it.', 2),
+        Q('Tell me about your projects.', 'Describe the problem, your role, the tech used and one challenge you solved.', 2)
+      ]),
       R('Technical interview 1', '', [
         Q('Tree problem: return the minimum number needed to balance the weights of the branches (the candidate recalled the statement only loosely).', 'Think post-order DFS: at each node the largest child path sets the target, and you add the difference to the shorter paths.', 1),
         Q('Basic tree questions, then draw a tree and write code in a Google document.', 'Practise traversals and recursion without autocomplete. State the complexity.', 1),

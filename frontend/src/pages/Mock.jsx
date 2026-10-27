@@ -19,6 +19,8 @@ export default function Mock() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [warn, setWarn] = useState('');
+  const [pattern, setPattern] = useState(null);
+  const [si, setSi] = useState(0);
   const [viol, setViol] = useState(0);
   const [isFs, setIsFs] = useState(true);
   const answersRef = useRef({});
@@ -32,6 +34,12 @@ export default function Mock() {
   useEffect(() => {
     api('/assessment/companies').then((d) => setCompanies(d.companies)).catch(() => nav('/login'));
   }, [nav]);
+
+  useEffect(() => {
+    setPattern(null);
+    if (!company) return;
+    api('/mock/pattern?company=' + encodeURIComponent(company)).then((d) => setPattern(d.pattern)).catch(() => {});
+  }, [company]);
 
   const stopProctor = () => {
     if (streamRef.current) {
@@ -83,21 +91,25 @@ export default function Mock() {
     if (total >= MAX_VIOLATIONS) submit('violations');
   };
 
-  // timer
+  // timer: one timer for the whole test, or one per section when the company test is sectional
   useEffect(() => {
     if (!session || result) return undefined;
-    const end = Date.now() + session.minutes * 60000;
-    setLeft(session.minutes * 60);
+    const secs = session.sections;
+    const sectional = !!(secs && session.mode === 'sectional');
+    const minutes = sectional ? secs[si].minutes : session.minutes;
+    const end = Date.now() + minutes * 60000;
+    setLeft(minutes * 60);
     const id = setInterval(() => {
       const s = Math.max(0, Math.round((end - Date.now()) / 1000));
       setLeft(s);
       if (s === 0) {
         clearInterval(id);
-        submit('time');
+        if (sectional && si < secs.length - 1) setSi(si + 1);
+        else submit('time');
       }
     }, 500);
     return () => clearInterval(id);
-  }, [session, result]);
+  }, [session, result, si]);
 
   // browser-based monitoring
   useEffect(() => {
@@ -155,6 +167,7 @@ export default function Mock() {
       sessionRef.current = d;
       setAnswers({});
       setResult(null);
+      setSi(0);
       setSession(d);
     } catch (e) {
       setError(e.message);
@@ -172,6 +185,7 @@ export default function Mock() {
     stopProctor();
     sessionRef.current = null;
     setSession(null);
+    setSi(0);
     setResult(null);
     setAnswers({});
     setWarn('');
@@ -208,6 +222,17 @@ export default function Mock() {
             <p className="muted small">{t('proctorNote')}</p>
           </div>
         )}
+        {result.sections && (
+          <div className="card">
+            <h3>Section-wise score</h3>
+            {result.sections.map((x) => (
+              <div key={x.index} className="row">
+                <div className="rowhead"><span>{x.name}</span><span>{x.correct}/{x.total} ({x.percent}%)</span></div>
+                <div className="bar"><div className="fill" style={{ width: x.percent + '%' }} /></div>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="card">
           {result.categories.map((c) => (
             <div key={c.category} className="row">
@@ -223,7 +248,7 @@ export default function Mock() {
         {result.review.map((r, i) => (
           <div className="card q" key={i}>
             <div className="tag">{t('cat_' + r.cat)}</div>
-            <p className="qtext">{i + 1}. {r.question}</p>
+            <p className="qtext" style={{ whiteSpace: 'pre-wrap' }}>{i + 1}. {r.question}</p>
             <p style={{ color: r.chosen === r.answer ? '#2b8a3e' : '#c92a2a', margin: '4px 0' }}>
               {t('yourAnswer')}: {r.chosen >= 0 ? r.options[r.chosen] : t('notAnswered')}
             </p>
@@ -242,12 +267,51 @@ export default function Mock() {
     return (
       <div className="card">
         <h2>{t('mockTest')}</h2>
-        <p className="muted">{t('mockIntro')}</p>
+        {!pattern && <p className="muted">{t('mockIntro')}</p>}
         <label className="muted small">{t('targetCompany')}</label>
         <select value={company} onChange={(e) => { setCompany(e.target.value); localStorage.setItem('target', e.target.value); }} style={{ width: '100%', margin: '6px 0 14px' }}>
           <option value="">{t('general')}</option>
           {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
+        {pattern && (
+          <div className="card" style={{ margin: '0 0 14px', background: '#f4f6fc' }}>
+            <h3>{pattern.title}</h3>
+            <p className="small">{pattern.how}</p>
+            {!pattern.real && <p className="small error">{pattern.note}</p>}
+            <table style={{ width: '100%', borderCollapse: 'collapse', margin: '8px 0' }} className="small">
+              <thead>
+                <tr><th align="left">Section</th><th align="right">Questions</th><th align="right">{pattern.mode === 'shared' ? '' : 'Time'}</th></tr>
+              </thead>
+              <tbody>
+                {pattern.sections.map((x, i) => (
+                  <tr key={i}><td>{x.name}</td><td align="right">{x.count}</td><td align="right">{x.minutes ? x.minutes + ' min' : ''}</td></tr>
+                ))}
+                <tr><td><strong>Total</strong></td><td align="right"><strong>{pattern.total}</strong></td><td align="right"><strong>{pattern.minutes} min{pattern.mode === 'shared' ? ' shared' : ''}</strong></td></tr>
+              </tbody>
+            </table>
+            <p className="small muted">
+              {pattern.mode === 'shared'
+                ? 'One timer for all sections. You can move between sections.'
+                : 'Each section has its own timer. When time ends the next section starts, and you cannot go back, as in the real test.'}
+            </p>
+            {pattern.extras.length > 0 && (
+              <div>
+                <p className="small" style={{ margin: '8px 0 2px' }}><strong>Other parts of the real process (not in this MCQ test):</strong></p>
+                {pattern.extras.map((x, i) => (
+                  <p key={i} className="small muted" style={{ margin: '2px 0' }}>- <strong>{x.name}:</strong> {x.detail}</p>
+                ))}
+              </div>
+            )}
+            {pattern.real && pattern.note && <p className="small muted" style={{ marginTop: 8 }}>{pattern.note}</p>}
+            <p className="small muted" style={{ marginTop: 8 }}>Where this pattern comes from:</p>
+            <ol className="notes small">
+              {pattern.sources.map((x, i) => (
+                <li key={i}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title}</a></li>
+              ))}
+            </ol>
+            <p className="small muted">The sections, number of questions and timing follow these sources. The questions are practice MCQs written for NEXORA, because companies do not publish their real papers.</p>
+          </div>
+        )}
         <label style={{ display: 'flex', gap: 8, alignItems: 'center', margin: '0 0 6px' }}>
           <input type="checkbox" checked={proctored} onChange={(e) => setProctored(e.target.checked)} style={{ width: 'auto' }} />
           {t('proctored')}
@@ -285,20 +349,38 @@ export default function Mock() {
           style={{ position: 'fixed', right: 12, bottom: 12, width: 150, borderRadius: 10, border: '2px solid #2b8a3e', background: '#000', zIndex: 20 }}
         />
       )}
-      {session.questions.map((q) => (
-        <div className="card q" key={q.i}>
-          <div className="tag">{t('cat_' + q.cat)}</div>
-          <p className="qtext">{q.i + 1}. {q.question}</p>
-          {q.options.map((o, idx) => (
-            <label key={idx} className={answers[q.i] === idx ? 'opt picked' : 'opt'}>
-              <input type="radio" name={'m' + q.i} checked={answers[q.i] === idx} onChange={() => pick(q.i, idx)} />
-              {o}
-            </label>
-          ))}
+      {session.sections && (
+        <div className="card" style={{ background: '#f4f6fc' }}>
+          {session.mode === 'sectional' ? (
+            <strong>Section {si + 1} of {session.sections.length}: {session.sections[si].name} ({session.sections[si].count} questions, {session.sections[si].minutes} min)</strong>
+          ) : (
+            <strong>{session.title}: {session.sections.length} sections, one shared timer</strong>
+          )}
+        </div>
+      )}
+      {session.questions.filter((q) => !(session.sections && session.mode === 'sectional') || q.sec === si).map((q, n, arr) => (
+        <div key={q.i}>
+          {session.sections && session.mode === 'shared' && (n === 0 || arr[n - 1].sec !== q.sec) && (
+            <h3 style={{ margin: '14px 4px 6px' }}>{session.sections[q.sec].name}</h3>
+          )}
+          <div className="card q">
+            <div className="tag">{t('cat_' + q.cat)}</div>
+            <p className="qtext" style={{ whiteSpace: 'pre-wrap' }}>{q.i + 1}. {q.question}</p>
+            {q.options.map((o, idx) => (
+              <label key={idx} className={answers[q.i] === idx ? 'opt picked' : 'opt'}>
+                <input type="radio" name={'m' + q.i} checked={answers[q.i] === idx} onChange={() => pick(q.i, idx)} />
+                {o}
+              </label>
+            ))}
+          </div>
         </div>
       ))}
       {error && <div className="error">{error}</div>}
-      <button className="primary wide" disabled={busy} onClick={() => submit('manual')}>{t('submit')}</button>
+      {session.sections && session.mode === 'sectional' && si < session.sections.length - 1 ? (
+        <button className="primary wide" disabled={busy} onClick={() => setSi(si + 1)}>Submit this section and continue</button>
+      ) : (
+        <button className="primary wide" disabled={busy} onClick={() => submit('manual')}>{t('submit')}</button>
+      )}
     </div>
   );
 }

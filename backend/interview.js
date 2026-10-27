@@ -101,13 +101,19 @@ module.exports = function (app, db, auth) {
     const type = req.body && req.body.type === 'hr' ? 'hr' : 'tech';
     const company = String((req.body && req.body.company) || '').slice(0, 30);
     const base = type === 'hr' ? HR : TECH;
+    // 1) questions candidates reported for this company (each carries its source link)
+    const reported = require('./company_proof').interviewQuestions(company, type);
+    const main = shuffle(reported).slice(0, 6);
+    // 2) top up with our own practice questions for this company, then general ones (no source)
     const cq = ((require('./interview_companies')[company] || {})[type]) || [];
-    const main = shuffle(cq).slice(0, 6);
-    if (main.length < 6) shuffle(base).filter((b) => !main.some((m) => m.q === b.q)).slice(0, 6 - main.length).forEach((b) => main.push(b));
-    const s = { main, mi: 1, asked: [{ q: main[0].q, kind: 'main', kw: main[0].kw, a: main[0].a }], pending: [], used: [] };
+    const fillers = shuffle(cq).concat(shuffle(base));
+    fillers.forEach((b) => {
+      if (main.length < 6 && !main.some((m) => m.q === b.q)) main.push(b);
+    });
+    const s = { main, mi: 1, asked: [{ q: main[0].q, kind: 'main', kw: main[0].kw, a: main[0].a, src: main[0].src || null }], pending: [], used: [] };
     const r = db.prepare('INSERT INTO interview_sessions (user_id, type, company, data) VALUES (?,?,?,?)')
       .run(req.user.id, type, company, JSON.stringify(s));
-    res.json({ sessionId: r.lastInsertRowid, question: main[0].q, kind: 'main', index: 1, type });
+    res.json({ sessionId: r.lastInsertRowid, question: main[0].q, kind: 'main', index: 1, type, source: main[0].src || null });
   });
 
   app.post('/api/interview/answer', auth, (req, res) => {
@@ -141,13 +147,13 @@ module.exports = function (app, db, auth) {
       next = { q: p.q, kind: 'follow', kw: p.kw || [], a: p.a || '' };
     } else if (s.mi < s.main.length) {
       const m = s.main[s.mi++];
-      next = { q: m.q, kind: 'main', kw: m.kw, a: m.a };
+      next = { q: m.q, kind: 'main', kw: m.kw, a: m.a, src: m.src || null };
     }
 
     if (next) {
       s.asked.push(next);
       db.prepare('UPDATE interview_sessions SET data = ? WHERE id = ?').run(JSON.stringify(s), row.id);
-      return res.json({ done: false, question: next.q, kind: next.kind, index: s.asked.length, type: row.type, feedback });
+      return res.json({ done: false, question: next.q, kind: next.kind, index: s.asked.length, type: row.type, feedback, source: next.src || null });
     }
 
     const scores = s.asked.map((a) => a.score || 0);
@@ -159,7 +165,7 @@ module.exports = function (app, db, auth) {
     if (row.type === 'hr' && !/(for example|for instance|i once|when i|situation|result|learned|learnt)/i.test(all)) tips.push('examples');
     if (s.asked.some((a) => (a.missed || []).length)) tips.push('missed');
     if (!tips.length) tips.push('good');
-    const review = s.asked.map((a) => ({ q: a.q, kind: a.kind, score: a.score || 0, verdict: a.verdict || 'wrong', missed: a.missed || [], answer: a.answer || '', sample: a.a || '' }));
+    const review = s.asked.map((a) => ({ q: a.q, kind: a.kind, score: a.score || 0, verdict: a.verdict || 'wrong', missed: a.missed || [], answer: a.answer || '', sample: a.a || '', source: a.src || null }));
     db.prepare('UPDATE interview_sessions SET data = ?, done = 1 WHERE id = ?').run(JSON.stringify(s), row.id);
     db.prepare('INSERT INTO interview_results (user_id, type, company, score, data) VALUES (?,?,?,?,?)')
       .run(req.user.id, row.type, row.company, overall, JSON.stringify(review));

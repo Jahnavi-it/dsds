@@ -18,6 +18,21 @@ const VERDICT = {
   wrong: { label: 'Not correct yet', color: '#c92a2a' }
 };
 
+function SourceBadge({ source, follow }) {
+  if (!source && follow) {
+    return <p className="small muted" style={{ margin: '4px 0' }}>Follow-up chosen from your previous answer</p>;
+  }
+  if (!source) {
+    return <p className="small muted" style={{ margin: '4px 0' }}>Practice question (written for this app, not from a candidate report)</p>;
+  }
+  return (
+    <p className="small" style={{ margin: '4px 0' }}>
+      <span className="tag">{source.type === 'experience' ? 'candidate experience' : 'prep guide (sample)'}</span>{' '}
+      <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>
+    </p>
+  );
+}
+
 export default function Interview() {
   const { t } = useTranslation();
   const nav = useNavigate();
@@ -183,6 +198,7 @@ export default function Interview() {
                   <span style={{ color: v.color }}>{v.label} ({r.score}%)</span>
                 </div>
                 <div className="bar"><div className="fill" style={{ width: r.score + '%' }} /></div>
+                <SourceBadge source={r.source} follow={r.kind === 'follow'} />
                 <p className="small muted">{r.answer || '-'}</p>
                 {r.missed.length > 0 && (
                   <p className="small">
@@ -205,6 +221,8 @@ export default function Interview() {
       <div className="card">
         <ProctorPanel p={proctor} />
         <h3 style={{ color: v.color }}>{v.label} ({fb.score}%)</h3>
+        <p className="small"><strong>Question:</strong> {q && q.question}</p>
+        {q && <SourceBadge source={q.source} follow={q.kind === 'follow'} />}
         <p className="small muted">Your answer: {fb.answer}</p>
         {fb.missed && fb.missed.length > 0 && (
           <p className="small">
@@ -232,6 +250,7 @@ export default function Interview() {
         <ProctorPanel p={proctor} />
         <span className="tag">{typeLabel(q.type || type)}{coName(company) ? ' | ' + coName(company) : ''} | {q.kind === 'follow' ? t('followUp', { defaultValue: 'Follow-up' }) : t('mainQ', { defaultValue: 'Main question' })} #{q.index}</span>
         <p className="qtext">{q.question}</p>
+        <SourceBadge source={q.source} follow={q.kind === 'follow'} />
         {speechSupported() && (
           <div className="stack">
             <button className="secondary linkbtn" onClick={() => speak(q.question, 'en')}>Listen to question</button>
@@ -288,7 +307,7 @@ export default function Interview() {
           <option value="">General (no specific company)</option>
           {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
-        <p className="small muted">Questions follow each company's usual interview style. They are practice questions based on commonly reported patterns, not official company papers.</p>
+        <p className="small muted">Questions marked "candidate experience" were reported by real candidates, and the source link is shown with each one, so you can open it as proof. Questions marked "practice" are written for this app. Interviews change every year, so none of this is an official company paper.</p>
         {speechSupported() && (
           <label className="small muted" style={{ display: 'block', marginTop: 12 }}>
             <input type="checkbox" checked={voiceOn} onChange={(e) => setVoiceOn(e.target.checked)} style={{ width: 'auto' }} /> {t('readAloud', { defaultValue: 'Read questions aloud' })}
