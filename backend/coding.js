@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 const { spawn } = require('child_process');
 
-// 35 practice problems. Every problem reads from stdin, prints to stdout and has 3 test cases.
+// 50 practice problems. Every problem reads from stdin, prints to stdout and has 3 test cases.
 const PROBLEMS = require('./coding_problems.json');
 
 // ---------------------------------------------------------------------------
