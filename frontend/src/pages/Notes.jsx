@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 
-const tip = { margin: '6px 0 0', padding: '8px 10px', background: '#f4f6fc', borderRadius: 6, fontSize: 14 };
+const tip = { margin: '6px 0 0', padding: '8px 10px', background: '#f4f6fc', borderRadius: 6, fontSize: 14, whiteSpace: 'pre-wrap' };
 
 export default function Notes() {
   const { t } = useTranslation();
@@ -35,7 +35,10 @@ export default function Notes() {
   if (error) return <div className="card"><Link to="/notes">{t('allCompanies', { defaultValue: 'All companies' })}</Link><p className="error">{error}</p></div>;
   if (!n) return <div className="card">...</div>;
 
-  const total = n.rounds.reduce((x, r) => x + r.questions.length, 0);
+  const reported = n.rounds.filter((r) => !r.practice);
+  const practiceRounds = n.rounds.filter((r) => r.practice);
+  const total = reported.reduce((x, r) => x + r.questions.length, 0);
+  const practiceTotal = practiceRounds.reduce((x, r) => x + r.questions.length, 0);
   const src = (i) => n.sources[i - 1];
 
   return (
@@ -44,7 +47,8 @@ export default function Notes() {
         <h2>{n.name} - {t('notes', { defaultValue: 'Notes' })}</h2>
         <Link to="/notes">{t('allCompanies', { defaultValue: 'All companies' })}</Link>
         <p>{n.summary}</p>
-        <p className="muted small">{total} {t('reportedQs', { defaultValue: 'questions reported by candidates' })} | {n.rounds.length} {t('roundsLabel', { defaultValue: 'rounds' })}</p>
+        <p className="muted small">{total} {t('reportedQs', { defaultValue: 'questions reported by candidates' })} | {reported.length} {t('roundsLabel', { defaultValue: 'rounds' })}
+          {practiceTotal > 0 && <> | {practiceTotal} {t('practiceQs', { defaultValue: 'practice questions with answers (aptitude, reasoning, verbal, coding)' })}</>}</p>
         <p className="muted small">{t('notesDisclaimer', { defaultValue: 'Questions change every year. Use these as practice material, not as a fixed paper.' })}</p>
         <p className="muted small">{t('practiceElsewhere', { defaultValue: 'Looking for MCQ practice for {{name}}? It is in Company prep.', name: n.name })} <Link to={'/companies/' + n.id}>{t('openCompanyPrep', { defaultValue: 'Open Company prep' })}</Link></p>
       </div>
@@ -56,7 +60,7 @@ export default function Notes() {
 
       {n.rounds.map((r, ri) => (
         <div key={ri} className="card">
-          <h3>{r.name}</h3>
+          <h3>{r.name} {r.practice && <span className="tag lvl-medium">{t('practiceTag', { defaultValue: 'Practice' })}</span>}</h3>
           {r.note && <p className="muted">{r.note}</p>}
           {r.questions.map((q, qi) => (
             <details key={qi} className="row">
