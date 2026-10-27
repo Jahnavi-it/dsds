@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 
@@ -244,20 +244,12 @@ export default function Mock() {
             </div>
           ))}
         </div>
-        <div className="card"><h3>{t('review')}</h3></div>
-        {result.review.map((r, i) => (
-          <div className="card q" key={i}>
-            <div className="tag">{t('cat_' + r.cat)}</div>
-            <p className="qtext" style={{ whiteSpace: 'pre-wrap' }}>{i + 1}. {r.question}</p>
-            <p style={{ color: r.chosen === r.answer ? '#2b8a3e' : '#c92a2a', margin: '4px 0' }}>
-              {t('yourAnswer')}: {r.chosen >= 0 ? r.options[r.chosen] : t('notAnswered')}
-            </p>
-            {r.chosen !== r.answer && (
-              <p style={{ color: '#2b8a3e', margin: '4px 0' }}>{t('correctAnswer')}: {r.options[r.answer]}</p>
-            )}
-            <p className="muted small">{r.explanation}</p>
+        {result.mistakesSaved > 0 && (
+          <div className="card">
+            <p>{result.mistakesSaved} {t('simWrongSaved', { defaultValue: 'wrong answers were saved to your Mistake book.' })}</p>
+            <Link to="/mistakes" className="actionbtn">{t('mistakeBook', { defaultValue: 'Mistake book' })}</Link>
           </div>
-        ))}
+        )}
         <button className="primary wide" onClick={reset}>{t('tryAgain')}</button>
       </div>
     );

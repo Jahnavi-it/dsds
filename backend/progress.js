@@ -140,15 +140,19 @@ module.exports = function (app, db, auth) {
     db.prepare('UPDATE mock_sessions SET submitted = 1 WHERE id = ?').run(s.id);
     db.prepare('INSERT INTO mock_attempts (user_id, company, score, total, seconds, data) VALUES (?,?,?,?,?,?)')
       .run(req.user.id, s.company, score, qs.length, seconds, JSON.stringify(categories));
+    // Mistakes are saved once per question (UNIQUE user_id+question) and shown only in the Mistake book.
+    let saved = 0;
     review.forEach((r) => {
       if (r.chosen === r.answer) {
         db.prepare('DELETE FROM mistakes WHERE user_id = ? AND question = ?').run(req.user.id, r.question);
       } else {
         db.prepare('INSERT OR REPLACE INTO mistakes (user_id, cat, question, options, answer, chosen, explanation) VALUES (?,?,?,?,?,?,?)')
           .run(req.user.id, r.cat, r.question, JSON.stringify(r.options), r.answer, r.chosen, r.explanation || '');
+        saved += 1;
       }
     });
-    res.json({ score, total: qs.length, percent: Math.round((score / qs.length) * 100), seconds, late, categories, sections, review });
+    // The answer review is intentionally not returned: only the score is shown after the test.
+    res.json({ score, total: qs.length, percent: Math.round((score / qs.length) * 100), seconds, late, categories, sections, mistakesSaved: saved });
   });
 
   app.post('/api/progress/checkin', auth, (req, res) => {
