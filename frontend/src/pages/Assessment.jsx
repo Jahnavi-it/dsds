@@ -29,7 +29,7 @@ export default function Assessment() {
     setBusy(true);
     try {
       await api('/assessment/submit', { method: 'POST', body: { answers } });
-      nav('/result');
+      nav('/score');
     } catch (e) {
       setError(e.message);
       setBusy(false);

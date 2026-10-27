@@ -7,6 +7,7 @@ import ForgotPassword from './pages/ForgotPassword.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Assessment from './pages/Assessment.jsx';
 import Result from './pages/Result.jsx';
+import Score from './pages/Score.jsx';
 import Learn from './pages/Learn.jsx';
 import Subject from './pages/Subject.jsx';
 import Topic from './pages/Topic.jsx';
@@ -84,6 +85,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/result" element={<Result />} />
+          <Route path="/score" element={<Score />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/learn/:subject" element={<Subject />} />
           <Route path="/learn/:subject/:idx" element={<Topic />} />

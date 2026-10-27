@@ -40,26 +40,11 @@ export default function Result() {
   return (
     <div>
       <div className="card">
-        <h2>{t('overall')}: {data.overall}%</h2>
-        <div className="bar"><div className="fill" style={{ width: data.overall + '%' }} /></div>
+        <h2>{t('roadmap')}</h2>
         <p className="muted">{t('totalPlan')}: {data.totalWeeks} {t('weeks')}</p>
       </div>
 
       <div className="card">
-        <h3>{t('skillGap')}</h3>
-        {data.categories.map((c) => (
-          <div key={c.category} className="row">
-            <div className="rowhead">
-              <span>{t('cat_' + c.category)}</span>
-              <span className={'lvl ' + c.level}>{t('level_' + c.level)} ({c.percent}%)</span>
-            </div>
-            <div className="bar"><div className={'fill ' + c.level} style={{ width: c.percent + '%' }} /></div>
-          </div>
-        ))}
-      </div>
-
-      <div className="card">
-        <h3>{t('roadmap')}</h3>
         <label className="muted small">{t('targetCompany')}</label>
         <select value={company} onChange={choose} style={{ width: '100%', margin: '6px 0 14px' }}>
           <option value="">{t('generalPlan')}</option>
@@ -89,7 +74,6 @@ export default function Result() {
         ))}
       </div>
 
-      <Link to="/assessment" className="primary wide linkbtn">{t('retake')}</Link>
     </div>
   );
 }
