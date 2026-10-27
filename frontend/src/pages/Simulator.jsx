@@ -1,72 +1,98 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { api } from '../api.js';
 import { useProctor, ProctorPanel } from '../Proctor.jsx';
 
-const pctOf = (cats, part) => {
-  const c = cats.find((x) => String(x.category).toLowerCase().includes(part));
-  return c ? c.percent : null;
-};
+const pre = { background: '#f4f6fc', padding: 8, borderRadius: 6, margin: '4px 0', overflowX: 'auto', whiteSpace: 'pre-wrap' };
+const okColor = '#2b8a3e';
+const badColor = '#c92a2a';
+const mmss = (s) => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
 
-const bar = (v, ok) => (
-  <div className="bar"><div style={{ width: (v || 0) + '%', height: '100%', borderRadius: 'inherit', background: ok ? '#2b8a3e' : '#c92a2a' }} /></div>
+const Bar = ({ v, ok }) => (
+  <div className="bar"><div style={{ width: (v || 0) + '%', height: '100%', borderRadius: 'inherit', background: ok ? okColor : badColor }} /></div>
 );
 
+// Round-by-round progress, like the stages of a real campus drive.
+function Stepper({ rounds, index }) {
+  return (
+    <div className="card" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+      {rounds.map((r, i) => {
+        const st = r.status;
+        const color = st === 'passed' ? okColor : st === 'failed' ? badColor : st === 'active' ? '#3b5bdb' : '#868e96';
+        return (
+          <div key={r.id} style={{ flex: 1, minWidth: 120, borderTop: '4px solid ' + color, paddingTop: 6 }}>
+            <div className="small" style={{ color }}><strong>{i + 1}. {r.name}</strong></div>
+            <div className="muted small">
+              {st === 'passed' && 'Cleared (' + r.score + '%)'}
+              {st === 'failed' && 'Not cleared (' + r.score + '%)'}
+              {st === 'active' && (i === index ? 'In progress' : 'Active')}
+              {(st === 'pending' || st === 'not reached') && 'Waiting'}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Simulator() {
-  const { t } = useTranslation();
   const nav = useNavigate();
-  const [companies, setCompanies] = useState([]);
-  const [cid, setCid] = useState('');
-  const [pp, setPp] = useState(null);
-  const [result, setResult] = useState(null);
   const [ready, setReady] = useState(false);
-  const [phase, setPhase] = useState('home');
-  const [session, setSession] = useState(null);
-  const [ri, setRi] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [deadline, setDeadline] = useState(0);
-  const [now, setNow] = useState(Date.now());
+  const [companies, setCompanies] = useState([]);
+  const [cid, setCid] = useState(localStorage.getItem('target') || '');
+  const [prep, setPrep] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [resumable, setResumable] = useState(null);
+  const [drive, setDrive] = useState(null);
+  const [strict, setStrict] = useState(true);
+  const [proctored, setProctored] = useState(true);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
-  const [out, setOut] = useState(null);
-  const [proctored, setProctored] = useState(true);
-  const [resumable, setResumable] = useState(null);
-  const finishRef = useRef(null);
-  const proctor = useProctor({ max: 3, onLimit: () => { if (finishRef.current) finishRef.current(); } });
+  const [deadline, setDeadline] = useState(0);
+  const [now, setNow] = useState(Date.now());
+  const [answers, setAnswers] = useState({});
+  const autoRef = useRef(null);
+  const proctor = useProctor({ max: 3, onLimit: () => { if (autoRef.current) autoRef.current(); } });
+
+  const loadHome = () => {
+    api('/drive/history').then((d) => setHistory(d.history || [])).catch(() => {});
+    api('/drive/active').then((d) => setResumable(d && d.drive ? d.drive : null)).catch(() => {});
+  };
 
   useEffect(() => {
-    Promise.all([
-      api('/companies').then((d) => d.companies).catch(() => null),
-      api('/passport').catch(() => null),
-      api('/assessment/result').then((d) => d.result).catch(() => null),
-    ]).then(([c, p, r]) => {
-      if (!c || !p) { nav('/login'); return; }
-      setCompanies(c); setCid(c[0] ? c[0].id : ''); setPp(p); setResult(r); setReady(true);
-    });
-  }, [nav]);
-
-  useEffect(() => {
-    if (phase !== 'running') return undefined;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === 'running' && deadline && now >= deadline) goNext();
-  }, [now]);
-
-  useEffect(() => {
-    api('/simulator/active').then((d) => { if (d && d.session) setResumable(d); }).catch(() => {});
+    api('/companies').then((d) => {
+      setCompanies(d.companies);
+      setCid((c) => (d.companies.some((x) => x.id === c) ? c : (d.companies[0] ? d.companies[0].id : '')));
+      setReady(true);
+    }).catch(() => nav('/login'));
+    loadHome();
+    // eslint-disable-next-line
   }, []);
 
-  const resume = () => {
-    const d = resumable;
-    let saved = {};
-    try { saved = JSON.parse(localStorage.getItem('simAns' + d.session.sessionId) || '{}'); } catch (e) { saved = {}; }
-    setSession(d.session); setAnswers(saved); setRi(d.roundIndex); setOut(null);
-    setDeadline(Date.now() + d.roundSecondsLeft * 1000);
-    setNow(Date.now()); setResumable(null); setPhase('running');
+  useEffect(() => {
+    if (!cid) return;
+    setPrep(null);
+    api('/drive/prepare?company=' + encodeURIComponent(cid)).then(setPrep).catch(() => setPrep(null));
+  }, [cid]);
+
+  useEffect(() => {
+    if (!drive || drive.status !== 'running') return undefined;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [drive && drive.status]);
+
+  // Every time the server sends a new state, restart the clock for the current round.
+  const apply = (d) => {
+    setDrive(d);
+    setDeadline(Date.now() + (d.secondsLeft || 0) * 1000);
+    setNow(Date.now());
+    setErr('');
+    window.scrollTo(0, 0);
+    if (d.status !== 'running') {
+      proctor.report('drive', d.id);
+      proctor.stop();
+      try { localStorage.removeItem('driveAns' + d.id); } catch (e) { /* ignore */ }
+    }
   };
 
   const start = async () => {
@@ -76,180 +102,378 @@ export default function Simulator() {
       if (!ok) { setErr('Camera permission was not given. Allow the camera, or turn off proctored mode.'); setBusy(false); return; }
     }
     try {
-      const d = await api('/simulator/start?company=' + encodeURIComponent(cid));
-      setSession(d); setAnswers({}); setRi(0); setOut(null);
-      setDeadline(Date.now() + d.rounds[0].minutes * 60000);
-      setNow(Date.now());
-      setPhase('running');
+      const d = await api('/drive/start', { method: 'POST', body: { company: cid, strict } });
+      setAnswers({});
+      apply(d);
     } catch (e) { setErr(e.message); proctor.stop(); }
     setBusy(false);
   };
 
-  const finish = async () => {
+  const resume = () => {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('driveAns' + resumable.id) || '{}'); } catch (e) { saved = {}; }
+    setAnswers(saved);
+    apply(resumable);
+    setResumable(null);
+  };
+
+  const left = drive && drive.status === 'running' ? Math.max(0, Math.round((deadline - now) / 1000)) : 0;
+  const round = drive && drive.status === 'running' ? drive.rounds[drive.roundIndex] : null;
+
+  const submitTest = async () => {
+    if (busy) return;
     setBusy(true);
-    try {
-      const d = await api('/simulator/submit', { method: 'POST', body: { sessionId: session.sessionId, answers: answers } });
-      proctor.report('simulator', session.sessionId); setOut(d); setPhase('result'); proctor.stop();
-    } catch (e) { setErr(e.message); proctor.stop(); }
+    try { apply(await api('/drive/test/submit', { method: 'POST', body: { id: drive.id, answers } })); } catch (e) { setErr(e.message); }
     setBusy(false);
   };
-
-  finishRef.current = finish;
-
-  const goNext = () => {
-    if (!session || busy) return;
-    if (ri < session.rounds.length - 1) {
-      setRi(ri + 1);
-      setDeadline(Date.now() + session.rounds[ri + 1].minutes * 60000);
-      setNow(Date.now());
-      window.scrollTo(0, 0);
-    } else {
-      setDeadline(0);
-      finish();
-    }
+  const finishCoding = async () => {
+    if (busy) return;
+    setBusy(true);
+    try { apply(await api('/drive/code/finish', { method: 'POST', body: { id: drive.id } })); } catch (e) { setErr(e.message); }
+    setBusy(false);
   };
+  autoRef.current = () => {
+    if (!round) return;
+    if (round.id === 'test') submitTest();
+    else if (round.id === 'coding') finishCoding();
+  };
+
+  useEffect(() => {
+    if (round && left === 0 && deadline && (round.id === 'test' || round.id === 'coding') && !busy) autoRef.current();
+    // eslint-disable-next-line
+  }, [left]);
 
   if (!ready) return <p>...</p>;
 
-  const part = (k) => (pp.parts || []).find((p) => p.key === k) || { score: 0, max: 1 };
-  const pct = (k) => Math.round((part(k).score / part(k).max) * 100);
-
-  // ---------- Running ----------
-  if (phase === 'running' && session) {
-    const rd = session.rounds[ri];
-    const last = ri === session.rounds.length - 1;
-    const left = Math.max(0, Math.round((deadline - now) / 1000));
-    const mm = Math.floor(left / 60);
-    const ss = String(left % 60).padStart(2, '0');
+  // ---------------- Finished: drive report ----------------
+  if (drive && drive.status !== 'running' && drive.report) {
+    const rp = drive.report;
+    const selected = rp.outcome === 'selected';
     return (
       <div>
-        <h2>{session.company}: {t('simRound', { n: ri + 1, defaultValue: 'Round {{n}}' })} / {session.rounds.length} - {rd.name}</h2>
-        <div className="card">
-          <strong>{t('simTimeLeft', { defaultValue: 'Time left' })}: {mm}:{ss}</strong>
-          <ProctorPanel p={proctor} />
-          <p className="muted small">{t('simAutoNote', { defaultValue: 'When time ends, this round is submitted automatically and the next one starts.' })}</p>
+        <ProctorPanel p={proctor} />
+        <div className="card" style={{ borderLeft: '6px solid ' + (selected ? okColor : badColor) }}>
+          <h2 style={{ color: selected ? okColor : badColor }}>{selected ? 'Drive cleared: you are shortlisted' : 'Not selected this time'}</h2>
+          <p>
+            {drive.company.name} placement drive (practice).{' '}
+            {selected ? 'You cleared every round.' : rp.strict && rp.rejectedAt ? 'You were out after the round: ' + rp.rejectedAt + '.' : 'Some rounds were not cleared.'}
+          </p>
+          <p className="muted small">Overall: {rp.overall}% across the rounds you attempted. This is practice feedback, not a real selection result.</p>
+          {proctor.limitHit && <p style={{ color: badColor }}>A round was auto-submitted: too many proctoring violations.</p>}
         </div>
-        {rd.questions.map((q, n) => (
-          <div className="card q" key={q.i}>
-            <p className="qtext">{n + 1}. {q.question}</p>
-            {q.options.map((o, oi) => (
-              <label key={oi} style={{ display: 'block', margin: '6px 0', cursor: 'pointer' }}>
-                <input type="radio" name={'q' + q.i} checked={answers[q.i] === oi} onChange={() => { const na = { ...answers, [q.i]: oi }; setAnswers(na); try { localStorage.setItem('simAns' + session.sessionId, JSON.stringify(na)); } catch (e) { /* ignore */ } }} /> {o}
-              </label>
-            ))}
+
+        {rp.rounds.map((r, i) => (
+          <div className="card" key={r.id}>
+            <div className="rowhead">
+              <strong>{i + 1}. {r.name}</strong>
+              <span style={{ color: r.status === 'passed' ? okColor : r.status === 'failed' ? badColor : '#868e96' }}>
+                {r.status === 'passed' ? 'Cleared' : r.status === 'failed' ? 'Not cleared' : 'Not reached'}
+                {r.score != null && ' - ' + r.score + '% (needs ' + r.cutoff + '%)'}
+              </span>
+            </div>
+            {r.score != null && <Bar v={r.score} ok={r.status === 'passed'} />}
+            {r.detail && r.detail.kind === 'test' && (
+              <div className="small" style={{ marginTop: 8 }}>
+                {r.detail.sections.map((s) => (
+                  <div key={s.name} style={{ color: s.percent < r.detail.sectionFloor ? badColor : 'inherit' }}>
+                    {s.name}: {s.correct}/{s.total} ({s.percent}%){s.percent < r.detail.sectionFloor && ' - below the ' + r.detail.sectionFloor + '% sectional cut-off'}
+                  </div>
+                ))}
+                {r.detail.mistakesSaved > 0 && <p className="muted">{r.detail.mistakesSaved} wrong answers were saved to your <Link to="/mistakes">Mistake book</Link>.</p>}
+                {r.detail.late && <p className="muted">Submitted after the time limit.</p>}
+              </div>
+            )}
+            {r.detail && r.detail.kind === 'coding' && (
+              <div className="small" style={{ marginTop: 8 }}>
+                {r.detail.problems.map((p) => <div key={p.id}>{p.title} ({p.level}): {p.passed}/{p.total} test cases passed</div>)}
+              </div>
+            )}
+            {r.detail && r.detail.kind === 'interview' && (
+              <div className="small" style={{ marginTop: 8 }}>
+                {r.detail.review.map((x, k) => (
+                  <div key={k} style={{ marginBottom: 6 }}>
+                    <div>{x.q}</div>
+                    <div className="muted">{x.score}% ({x.verdict}){x.missed.length > 0 && ' - missing: ' + x.missed.join(', ')}</div>
+                  </div>
+                ))}
+                <p className="muted">Interview scores are based on keywords and answer length, so treat them as practice feedback.</p>
+              </div>
+            )}
           </div>
         ))}
-        {err && <p style={{ color: '#c92a2a' }}>{err}</p>}
-        <button className="primary wide" onClick={goNext} disabled={busy}>
-          {busy ? '...' : last ? t('simSubmit', { defaultValue: 'Submit simulation' }) : t('simNextRound', { defaultValue: 'Submit round and continue' })}
-        </button>
+
+        <div className="card">
+          <h3>What to do next</h3>
+          <ul className="notes">
+            {rp.advice.map((a, i) => <li key={i}><Link to={a.to}>{a.text}</Link></li>)}
+          </ul>
+        </div>
+        <button className="primary wide" onClick={() => { setDrive(null); loadHome(); }}>Back to placement drive</button>
       </div>
     );
   }
 
-  // ---------- Result ----------
-  if (phase === 'result' && out) {
-    const passMark = out.passMark;
-    const all = out.rounds.map((r) => ({ name: r.name, v: r.percent }))
-      .concat([{ name: 'Coding', v: pct('coding') }, { name: 'HR interview', v: pct('hr') }]);
-    const clearedN = all.filter((r) => r.v >= passMark).length;
-    const overall = Math.round(all.reduce((s, r) => s + r.v, 0) / all.length);
-    const weak = all.filter((r) => r.v < passMark).map((r) => r.name);
-    return (
+  // ---------------- Running ----------------
+  if (drive && round) {
+    const head = (
       <div>
-        <h2>{t('simReport', { defaultValue: 'Simulation report' })}: {session ? session.company : ''}</h2>
-        {proctor.limitHit && <p style={{ color: '#c92a2a' }}>Auto-submitted: too many proctoring violations (tab switch, leaving full screen or camera off).</p>}
+        <ProctorPanel p={proctor} />
+        <h2>{drive.company.name} placement drive</h2>
+        <Stepper rounds={drive.rounds} index={drive.roundIndex} />
         <div className="card">
-          {all.map((r, i) => (
-            <div key={r.name} className="row">
-              <div className="rowhead">
-                <span>{t('simRound', { n: i + 1, defaultValue: 'Round {{n}}' })}: {r.name}</span>
-                <span>{r.v + '% ' + (r.v >= passMark ? '\u2713' : '\u2717')}</span>
-              </div>
-              {bar(r.v, r.v >= passMark)}
+          <strong>Round {drive.roundIndex + 1}: {round.name}</strong>
+          {(round.id === 'test' || round.id === 'coding') && (
+            <> | <strong style={{ color: left < 60 ? badColor : 'inherit' }}>Time left: {mmss(left)}</strong></>
+          )}
+          <p className="muted small">
+            Clearing this round needs {round.cutoff}%.
+            {drive.strict ? ' If you do not clear it, the drive ends here.' : ' Practice mode: the drive continues even if you do not clear a round.'}
+          </p>
+          {err && <p style={{ color: badColor }}>{err}</p>}
+        </div>
+      </div>
+    );
+
+    if (round.id === 'test' && drive.test) {
+      const pick = (i, oi) => {
+        const na = { ...answers, [i]: oi };
+        setAnswers(na);
+        try { localStorage.setItem('driveAns' + drive.id, JSON.stringify(na)); } catch (e) { /* ignore */ }
+      };
+      return (
+        <div>
+          {head}
+          <p className="muted small">Every section needs at least 40%, and the overall score needs {round.cutoff}%. When time ends the test is submitted automatically.</p>
+          {drive.test.sections.map((s, si) => (
+            <div key={si}>
+              <h3>{s.name} <span className="muted small">({s.count} questions)</span></h3>
+              {drive.test.questions.filter((q) => q.sec === si).map((q, n) => (
+                <div className="card q" key={q.i}>
+                  <p className="qtext" style={{ whiteSpace: 'pre-wrap' }}>{n + 1}. {q.question}</p>
+                  {q.options.map((o, oi) => (
+                    <label key={oi} style={{ display: 'block', margin: '6px 0', cursor: 'pointer' }}>
+                      <input type="radio" name={'q' + q.i} checked={answers[q.i] === oi} onChange={() => pick(q.i, oi)} /> {o}
+                    </label>
+                  ))}
+                </div>
+              ))}
             </div>
           ))}
-          <p><strong>{t('simOverall', { defaultValue: 'Overall' })}: {overall}%</strong> | {t('simCleared', { c: clearedN, n: all.length, defaultValue: 'Cleared {{c}}/{{n}} rounds' })}</p>
-          <p className="muted small">{t('simNote', { pass: passMark, defaultValue: 'Clearing a round needs {{pass}}%.' })} {t('simCodingNote', { defaultValue: 'Coding and HR scores come from your practice in those sections.' })}</p>
-          {weak.length > 0 && (
-            <div className="nextaction">
-              <div className="muted small">{t('simNeeds', { defaultValue: 'Needs improvement' })}</div>
-              <strong>{weak.join(', ')}</strong>
-            </div>
-          )}
+          <button className="primary wide" onClick={submitTest} disabled={busy}>{busy ? '...' : 'Submit online test'}</button>
         </div>
-        {out.review.length > 0 && (
-          <div className="card">
-            <p>{out.review.length} {t('simWrongSaved', { defaultValue: 'wrong answers were saved to your Mistake book.' })}</p>
-            <Link to="/mistakes" className="actionbtn">{t('mistakeBook', { defaultValue: 'Mistake book' })}</Link>
-          </div>
-        )}
-        <button className="primary wide" onClick={() => { setPhase('home'); setSession(null); }}>{t('simTryAgain', { defaultValue: 'Back to simulator' })}</button>
-      </div>
-    );
+      );
+    }
+
+    if (round.id === 'coding' && drive.coding) {
+      return <CodingRound head={head} drive={drive} busy={busy} onFinish={finishCoding} setErr={setErr} />;
+    }
+
+    if (round.id === 'tech' || round.id === 'hr') {
+      return (
+        <InterviewRound key={round.id} head={head} drive={drive} round={round} apply={apply} setErr={setErr} />
+      );
+    }
   }
 
-  // ---------- Home ----------
+  // ---------------- Home ----------------
   const company = companies.find((c) => c.id === cid) || {};
-  const pass = company.type === 'product' ? 70 : 60;
-  const cats = (result && result.categories) || [];
-  const techs = ['dsa', 'dbms', 'os', 'cn'].map((k) => pctOf(cats, k)).filter((v) => v !== null);
-  const tech = techs.length ? Math.round(techs.reduce((s, v) => s + v, 0) / techs.length) : null;
-
-  const rounds = [
-    { id: 'apt', name: 'Aptitude', v: pctOf(cats, 'aptitude'), to: '/learn/aptitude' },
-    { id: 'rea', name: 'Reasoning', v: pctOf(cats, 'reasoning'), to: '/learn/reasoning' },
-    { id: 'tec', name: 'Technical MCQs', v: tech, to: '/learn' },
-    { id: 'cod', name: 'Coding', v: pct('coding'), to: '/coding' },
-    { id: 'hr', name: 'HR interview', v: pct('hr'), to: '/interview' },
-  ];
-  const cleared = rounds.filter((r) => r.v !== null && r.v >= pass);
-  const known = rounds.filter((r) => r.v !== null);
-  const overall = known.length ? Math.round(known.reduce((s, r) => s + r.v, 0) / known.length) : 0;
-  const needs = rounds.filter((r) => r.v === null || r.v < pass);
-  const worst = [...rounds].sort((a, b) => (a.v === null ? -1 : a.v) - (b.v === null ? -1 : b.v))[0];
-
   return (
     <div>
-      <h2>{t('simTitle', { defaultValue: 'Placement simulator' })}</h2>
+      <ProctorPanel p={proctor} />
+      <h2>Placement drive simulator</h2>
+      <p className="muted">Go through a company's whole selection process, round by round. Clear a round to reach the next one, just like a real campus drive.</p>
       {resumable && (
         <div className="card">
-          <p><strong>You have an unfinished simulation ({resumable.session.company}).</strong></p>
-          <p className="muted small">Time is counted from when you started, so the clock kept running. Camera proctoring is not restarted on resume.</p>
-          <button className="primary wide" onClick={resume}>Resume simulation</button>
+          <p><strong>You have an unfinished drive ({resumable.company.name}).</strong></p>
+          <p className="muted small">The round clock kept running while you were away. Camera proctoring is not restarted on resume.</p>
+          <button className="primary wide" onClick={resume}>Resume drive</button>
         </div>
       )}
       <div className="card">
-        <label>{t('simTarget', { defaultValue: 'Target company' })}</label>
-        <select value={cid} onChange={(e) => setCid(e.target.value)}>
+        <label>Target company</label>
+        <select value={cid} onChange={(e) => { setCid(e.target.value); localStorage.setItem('target', e.target.value); }}>
           {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
-        <p className="muted small">{t('simIntro', { pass: pass, defaultValue: 'Real test: Aptitude (8 Qs), Reasoning (8 Qs), Technical (12 Qs), each with its own timer. Clearing a round needs {{pass}}%.' })}</p>
-        {err && <p style={{ color: '#c92a2a' }}>{err}</p>}
-        <label className="small muted" style={{ display: 'block', margin: '10px 0' }}>
+        {prep && (
+          <div style={{ marginTop: 12 }}>
+            <p className="small"><strong>{company.name} drive: {prep.rounds.length} rounds</strong> ({company.type === 'product' ? 'product company, higher cut-offs' : 'service company'})</p>
+            {prep.rounds.map((r, i) => (
+              <div key={r.id} className="small" style={{ padding: '4px 0' }}>
+                <strong>{i + 1}. {r.name}</strong> - {r.summary}, {r.minutes} min, needs {r.cutoff}%
+              </div>
+            ))}
+            <p className="muted small" style={{ marginTop: 8 }}>
+              Online test sections: {prep.sections.map((s) => s.name + ' (' + s.count + ')').join(', ')}. Each section needs at least {prep.sectionFloor}%.
+            </p>
+            {prep.extras && prep.extras.length > 0 && (
+              <p className="muted small">Part of the real process: {prep.extras.map((x) => (typeof x === 'string' ? x : x.name + ' (' + x.detail + ')')).join(' | ')}</p>
+            )}
+            {prep.note && <p className="muted small">{prep.note}</p>}
+          </div>
+        )}
+        {err && <p style={{ color: badColor }}>{err}</p>}
+        <label className="small muted" style={{ display: 'block', margin: '10px 0 4px' }}>
+          <input type="checkbox" checked={strict} onChange={(e) => setStrict(e.target.checked)} style={{ width: 'auto' }} /> Elimination mode: the drive ends when you fail a round (untick to practise all rounds)
+        </label>
+        <label className="small muted" style={{ display: 'block', margin: '4px 0 10px' }}>
           <input type="checkbox" checked={proctored} onChange={(e) => setProctored(e.target.checked)} style={{ width: 'auto' }} /> Proctored mode (camera + full screen + tab-switch warnings)
         </label>
-        <button className="primary wide" onClick={start} disabled={busy || !cid}>{busy ? '...' : t('simStart', { defaultValue: 'Start simulation' })}</button>
+        <button className="primary wide" onClick={start} disabled={busy || !cid || !prep}>{busy ? '...' : 'Start drive'}</button>
       </div>
 
-      <div className="card">
-        <h3>{t('simCurrent', { defaultValue: 'Your current readiness' })}: {company.name}</h3>
-        {rounds.map((r, i) => (
-          <div key={r.id} className="row">
-            <div className="rowhead">
-              <span>{t('simRound', { n: i + 1, defaultValue: 'Round {{n}}' })}: {r.name}</span>
-              <span>{r.v === null ? t('matrixNotAssessed', { defaultValue: 'Not assessed' }) : r.v + '% ' + (r.v >= pass ? '\u2713' : '\u2717')}</span>
+      {history.length > 0 && (
+        <div className="card">
+          <h3>Your drives</h3>
+          {history.map((h) => (
+            <div key={h.id} className="row">
+              <div className="rowhead">
+                <span>{h.company}</span>
+                <span style={{ color: h.outcome === 'selected' ? okColor : badColor }}>{h.outcome === 'selected' ? 'Selected' : 'Not selected'} ({h.overall}%)</span>
+              </div>
+              <div className="muted small">
+                {h.rounds.map((r) => r.name + ': ' + (r.status === 'passed' ? 'cleared' : r.status === 'failed' ? 'not cleared' : 'not reached')).join(' | ')}
+              </div>
+              <div className="muted small">{String(h.created_at).slice(0, 10)}</div>
             </div>
-            {bar(r.v, r.v !== null && r.v >= pass)}
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------- Round 2: coding ----------------
+function CodingRound({ head, drive, busy, onFinish, setErr }) {
+  const { problems, languages } = drive.coding;
+  const [pi, setPi] = useState(0);
+  const [lang, setLang] = useState(languages[0] ? languages[0].id : 'python');
+  const [codes, setCodes] = useState({});
+  const [outs, setOuts] = useState({});
+  const [best, setBest] = useState(drive.coding.best || {});
+  const [running, setRunning] = useState(false);
+  const p = problems[pi];
+  const key = p.id + ':' + lang;
+  const starter = (l) => ((languages.find((x) => x.id === l) || {}).starter) || '';
+  const code = codes[key] !== undefined ? codes[key] : starter(lang);
+  const out = outs[key];
+
+  const run = async () => {
+    setRunning(true);
+    try {
+      const r = await api('/drive/code/run', { method: 'POST', body: { id: drive.id, problemId: p.id, language: lang, code } });
+      setOuts({ ...outs, [key]: r });
+      setBest({ ...best, [p.id]: r.best });
+      setErr('');
+    } catch (e) { setErr(e.message); }
+    setRunning(false);
+  };
+
+  return (
+    <div>
+      {head}
+      <div className="card">
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {problems.map((x, i) => (
+            <button key={x.id} className={i === pi ? 'primary' : 'secondary'} style={{ border: 'none', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }} onClick={() => setPi(i)}>
+              {i + 1}. {x.title}{best[x.id] ? ' (' + best[x.id].passed + '/' + best[x.id].total + ')' : ''}
+            </button>
+          ))}
+        </div>
+        <h3 style={{ marginTop: 12 }}>{p.title} <span className={'tag lvl-' + String(p.level).toLowerCase()}>{p.level}</span></h3>
+        <p className="muted">{p.desc}</p>
+        <div className="small"><strong>Input</strong><pre style={pre}>{p.inputFormat}</pre></div>
+        <div className="small"><strong>Output</strong><pre style={pre}>{p.outputFormat}</pre></div>
+        <div className="small">
+          <strong>Sample</strong>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 140 }}>Input<pre style={pre}>{p.sample.input}</pre></div>
+            <div style={{ flex: 1, minWidth: 140 }}>Output<pre style={pre}>{p.sample.output}</pre></div>
           </div>
-        ))}
-        <p><strong>{t('simOverall', { defaultValue: 'Overall' })}: {overall}%</strong> | {t('simCleared', { c: cleared.length, n: rounds.length, defaultValue: 'Cleared {{c}}/{{n}} rounds' })}</p>
-        {needs.length > 0 && (
-          <div className="nextaction">
-            <div className="muted small">{t('simNeeds', { defaultValue: 'Needs improvement' })}</div>
-            <strong>{needs.map((r) => r.name).join(', ')}</strong>
-            <div><Link to={worst.to} className="actionbtn">{t('simNext', { defaultValue: 'Recommended next step' })}: {worst.name}</Link></div>
+        </div>
+        <label className="small muted" style={{ display: 'block', marginTop: 12 }}>
+          Language{' '}
+          <select value={lang} onChange={(e) => setLang(e.target.value)} style={{ padding: 8, borderRadius: 8, border: '1px solid #c9cfe3', fontSize: 15 }}>
+            {languages.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+          </select>
+        </label>
+        {lang === 'java' && <p className="small muted">Java: keep the class name <code>Main</code>.</p>}
+        <textarea rows={14} spellCheck={false} value={code} onChange={(e) => setCodes({ ...codes, [key]: e.target.value })}
+          style={{ width: '100%', boxSizing: 'border-box', marginTop: 8, fontFamily: 'monospace', fontSize: 14, padding: 10, border: '1px solid #c9cfe3', borderRadius: 8, tabSize: 4 }} />
+        <div className="stack">
+          <button className="primary" onClick={run} disabled={running || busy}>{running ? 'Running...' : 'Run against all test cases'}</button>
+        </div>
+        <p className="small muted">Only the first test case is shown in detail, the rest are hidden like in a real online judge. Your best result for each problem is what counts.</p>
+        {out && out.compileError && <div className="opt wrong"><strong>Compilation error</strong><pre style={pre}>{out.compileError}</pre></div>}
+        {out && out.results && out.results.length > 0 && (
+          <div style={{ marginTop: 8 }}>
+            <strong>{out.passed}/{out.total} test cases passed</strong>
+            {out.results.map((x, i) => (
+              <div key={i} className={'opt ' + (x.ok ? 'correct' : 'wrong')} style={{ display: 'block' }}>
+                <strong>Test {i + 1}: {x.ok ? 'PASS' : 'FAIL'}</strong>{!x.ok && <span> - {x.status}</span>}
+                {!x.ok && x.input !== undefined && (
+                  <div className="small">
+                    Input<pre style={pre}>{x.input}</pre>
+                    Expected<pre style={pre}>{x.expected}</pre>
+                    Your output<pre style={pre}>{x.got || '(nothing printed)'}</pre>
+                    {x.error && <>Error<pre style={pre}>{x.error}</pre></>}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
+        )}
+      </div>
+      <button className="primary wide" onClick={onFinish} disabled={busy}>{busy ? '...' : 'Finish coding round'}</button>
+    </div>
+  );
+}
+
+// ---------------- Rounds 3 and 4: interviews ----------------
+function InterviewRound({ head, drive, round, apply, setErr }) {
+  const type = round.id === 'tech' ? 'tech' : 'hr';
+  const [sid, setSid] = useState(null);
+  const [q, setQ] = useState(null);
+  const [n, setN] = useState(1);
+  const [answer, setAnswer] = useState('');
+  const [busy, setBusy] = useState(false);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    api('/interview/start', { method: 'POST', body: { type, company: drive.company.id, count: drive.interview.count } })
+      .then((d) => { setSid(d.sessionId); setQ(d.question); })
+      .catch((e) => setErr(e.message));
+    // eslint-disable-next-line
+  }, []);
+
+  const send = async () => {
+    if (busy || !answer.trim()) return;
+    setBusy(true);
+    try {
+      const r = await api('/interview/answer', { method: 'POST', body: { sessionId: sid, answer } });
+      setAnswer('');
+      if (r.done) {
+        apply(await api('/drive/interview/finish', { method: 'POST', body: { id: drive.id, sessionId: sid } }));
+      } else {
+        setQ(r.question); setN(n + 1);
+      }
+    } catch (e) { setErr(e.message); }
+    setBusy(false);
+  };
+
+  return (
+    <div>
+      {head}
+      <div className="card">
+        {!q ? <p>The interviewer is joining...</p> : (
+          <>
+            <p className="muted small">Question {n}. Answer the way you would in a real interview. You will see how you did in the drive report.</p>
+            <p className="qtext" style={{ whiteSpace: 'pre-wrap' }}>{q}</p>
+            <textarea rows={7} value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder="Type your answer here"
+              style={{ width: '100%', boxSizing: 'border-box', padding: 10, border: '1px solid #c9cfe3', borderRadius: 8, fontSize: 15 }} />
+            <button className="primary wide" onClick={send} disabled={busy || !answer.trim()}>{busy ? '...' : 'Submit answer'}</button>
+          </>
         )}
       </div>
     </div>

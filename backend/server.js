@@ -72,6 +72,7 @@ function start() {
   require('./progress')(app, db, auth);
   require('./proctor')(app, db, auth);
   require('./simulator')(app, db, auth);
+  require('./drive')(app, db, auth);
   require('./proctor_log')(app, db, auth);
 
   const PORT = process.env.PORT || 5000;

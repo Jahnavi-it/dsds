@@ -101,14 +101,15 @@ module.exports = function (app, db, auth) {
     const type = req.body && req.body.type === 'hr' ? 'hr' : 'tech';
     const company = String((req.body && req.body.company) || '').slice(0, 30);
     const base = type === 'hr' ? HR : TECH;
+    const N = Math.min(6, Math.max(2, Number(req.body && req.body.count) || 6));
     // 1) questions candidates reported for this company (each carries its source link)
     const reported = require('./company_proof').interviewQuestions(company, type);
-    const main = shuffle(reported).slice(0, 6);
+    const main = shuffle(reported).slice(0, N);
     // 2) top up with our own practice questions for this company, then general ones (no source)
     const cq = ((require('./interview_companies')[company] || {})[type]) || [];
     const fillers = shuffle(cq).concat(shuffle(base));
     fillers.forEach((b) => {
-      if (main.length < 6 && !main.some((m) => m.q === b.q)) main.push(b);
+      if (main.length < N && !main.some((m) => m.q === b.q)) main.push(b);
     });
     const s = { main, mi: 1, asked: [{ q: main[0].q, kind: 'main', kw: main[0].kw, a: main[0].a, src: main[0].src || null }], pending: [], used: [] };
     const r = db.prepare('INSERT INTO interview_sessions (user_id, type, company, data) VALUES (?,?,?,?)')
