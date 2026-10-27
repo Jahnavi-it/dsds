@@ -71,7 +71,7 @@ export default function Coding() {
   if (cur) {
     return (
       <div className="card">
-        <h2>{cur.title} <span className="tag">{cur.level}</span></h2>
+        <h2>{cur.title} <span className={"tag lvl-" + String(cur.level).toLowerCase()}>{cur.level}</span></h2>
         <p className="muted">{cur.desc}</p>
 
         <div className="small"><strong>{t('inputFormat', { defaultValue: 'Input' })}</strong><pre style={pre}>{cur.inputFormat}</pre></div>
@@ -141,7 +141,7 @@ export default function Coding() {
         <div key={p.id} className="subjhead row">
           <span className={'tick' + (p.solved ? ' done' : '')}>{p.solved ? '✓' : ''}</span>
           <strong>{p.title}</strong>
-          <span className="tag">{p.level}</span>
+          <span className={"tag lvl-" + String(p.level).toLowerCase()}>{p.level}</span>
           <button className="secondary" style={{ border: 'none', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }} onClick={() => open(p)}>{t('solve', { defaultValue: 'Solve' })}</button>
         </div>
       ))}

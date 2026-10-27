@@ -118,3 +118,8 @@ a.card.subj:hover { box-shadow: 0 4px 14px rgba(59,91,219,0.2); }
 .topbrand { font-size: 20px; }
 .topbrand-link { display: inline-flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; letter-spacing: .22em; font-weight: 700; }
 .brandlogo { display: flex; justify-content: center; margin-bottom: 8px; }
+
+/* Coding difficulty colours */
+.tag.lvl-easy { background: #d3f9d8; color: #2b8a3e; }
+.tag.lvl-medium { background: #ffe8cc; color: #d9480f; }
+.tag.lvl-hard { background: #ffe3e3; color: #c92a2a; }
